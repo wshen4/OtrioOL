@@ -13,8 +13,8 @@ public class Chess {
 	private Color chessColor;
 	
 	//constructor
-	public Chess(Type chessTpye, Color chessColor){
-		this.chessType = chessType;
-		this.chessColor = chessColor;
+	public Chess(Type chessType0, Color chessColor0){
+		this.chessType = chessType0;
+		this.chessColor = chessColor0;
 	}
 }
