@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import javafx.scene.image.Image; 
 import javafx.scene.image.ImageView;
 
+import java.io.*;
 
 public class Main extends Application{
 	static Stage window;
@@ -57,7 +58,7 @@ public class Main extends Application{
 		});
 		
 		//Imageview
-		Image welcomeImg = new Image("file:src/OtrioOL/Media/Image/Otrio.jpg", true);
+		Image welcomeImg = new Image("file:OtrioOL/src/OtrioOL/Media/Image/Image.jpeg",true);
 		ImageView imv = new ImageView();
 		imv.setImage(welcomeImg);
 		
@@ -77,7 +78,6 @@ public class Main extends Application{
 		window.setScene(new Scene(layout, 900, 700));
 		window.setResizable(false);
 		window.show();	
-		
 	}
 
 	@Override
@@ -85,8 +85,7 @@ public class Main extends Application{
 		// TODO Auto-generated method stub
 		window = arg0;
 		goToWelcome();
-		
-		
+				
 	}
 	
 	
