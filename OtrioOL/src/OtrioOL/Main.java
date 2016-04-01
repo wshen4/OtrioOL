@@ -15,6 +15,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.scene.image.Image; 
 import javafx.scene.image.ImageView;
+import javafx.geometry.Insets;	
 
 import java.io.*;
 
@@ -28,19 +29,27 @@ public class Main extends Application{
 	}
 	
 	//function for actual gaming
-	private static void startGame(){
+	private static void setting(){
 		//setup new scene
-		BorderPane gameLayout = new BorderPane();
-			Button backButton = new Button("Back");
-			backButton.setOnAction(e -> {
-				goToWelcome();
-			});
-		gameLayout.setTop(backButton);
-		Scene gameScene = new Scene(gameLayout, 900, 700);
+		BorderPane settingLayout = new BorderPane();
+		Button backButton = new Button("Back");
+		Button oneVsOne = new Button("1 VS 1 Local");
+		backButton.setOnAction(e -> {
+			goToWelcome();
+		});
+		oneVsOne.setOnAction(e -> {
+			LocalPeopleGames();
+		});
+		settingLayout.setCenter(oneVsOne);
+		settingLayout.setTop(backButton);
+		settingLayout.setPadding(new Insets(50,50,50,50));
+		
+		Scene gameScene = new Scene(settingLayout, 900, 700);
 		window.setScene(gameScene);
 		window.show();
 		
 	}
+	
 	
 	//Function for navigating to the welcome scene
 	private static void goToWelcome(){
@@ -52,32 +61,37 @@ public class Main extends Application{
 		//Button
 		Button startButton = new Button("Start New Game");
 		startButton.setOnAction(e -> {
-			PreGameWindow.displyWindow();
 			//new Scene for actual gaming
-			startGame();
+			setting();
 		});
 		
 		//Imageview
-		Image welcomeImg = new Image("file:OtrioOL/src/OtrioOL/Media/Image/Image.jpeg",true);
+		Image welcomeImg = new Image("file:OtrioOL/src/OtrioOL/Media/Image/Otrio.jpg",true);
 		ImageView imv = new ImageView();
 		imv.setImage(welcomeImg);
+		imv.setFitHeight(600);
+		imv.setFitWidth(900);
 		
 		//change to gridpane
-		GridPane layout = new GridPane();
-		layout.setVgap(10);
-		layout.setHgap(10);
+		BorderPane layout = new BorderPane();
+		layout.setPadding(new Insets(0,0,50,0));
 		
 			BorderPane bottomLayout = new BorderPane();
 			bottomLayout.setCenter(startButton);
 		
 		
-		layout.add(imv, 1,2);
-		layout.add(bottomLayout, 1, 10);
+		layout.setCenter(imv);
+		layout.setBottom(bottomLayout);
 		
 		
 		window.setScene(new Scene(layout, 900, 700));
 		window.setResizable(false);
 		window.show();	
+	}
+	
+	//Human 1 v 1 game locally
+	private static void LocalPeopleGames(){
+		//
 	}
 
 	@Override
