@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
@@ -60,14 +61,17 @@ public class Main extends Application{
 		ImageView imv = new ImageView();
 		imv.setImage(welcomeImg);
 		
-		
-		//different layers of BorderPane
-		BorderPane layout = new BorderPane();
+		//change to gridpane
+		GridPane layout = new GridPane();
+		layout.setVgap(10);
+		layout.setHgap(10);
 		
 			BorderPane bottomLayout = new BorderPane();
 			bottomLayout.setCenter(startButton);
-		layout.setBottom(bottomLayout);
-		layout.setCenter(imv);
+		
+		
+		layout.add(imv, 1,2);
+		layout.add(bottomLayout, 1, 10);
 		
 		
 		window.setScene(new Scene(layout, 900, 700));
