@@ -6,8 +6,9 @@ public class Game {
 	
 	public Game(){
 		mainBoard = new Chessboard();
-		
-		
+		/** fdfdfdfdfd
+		 * 
+		 */
 	}
 
 }
