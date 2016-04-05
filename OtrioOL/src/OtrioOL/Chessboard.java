@@ -16,13 +16,33 @@ public class Chessboard {
 		}
 	}
 
-	public boolean putChess(Player player, int position, int chessType){
+	public boolean putChess (Player player, int position, int chessType){
 		if(board.get(position).get(chessType) != 0 && player.checkInvt(chessType))
 			return false;
 		board.get(position).set(chessType, player.getId());
+		//may need to change to player 1->1, player 2->10, player 3->100, player 4->1000
 		player.minusChess(chessType);
 		return true;
 	}
+	//check condition wrap up win condition
+	private void checkWin(){
+		//if win {
+		//pop-up window says:
+		System.out.println("Player " + "Wins!");
+		//go back to the main window
+		//else
+		//continue;
+			
+	}
+	//win condition warp up
+	//win condition one: three in the roll
+		//1.check if the three position in the roll
+			//get sum of the all nine points in same row of column
+			//player 1 qualify: %3 = 0
+			//player 2 qualify: 
+		//2.check if the three chess in certain pattern:small-medium-big, 
+		//	b-m-s, s-s-s, m-m-m, b-b-b
+	//win condition two: occupy all three in one position: big-medium-small
 	
 }
 
