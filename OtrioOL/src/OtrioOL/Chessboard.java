@@ -16,14 +16,23 @@ public class Chessboard {
 		}
 	}
 
-	public boolean putChess (Player player, int position, int chessType){
-		if(board.get(position).get(chessType) != 0 && player.checkInvt(chessType))
+	public boolean putChess(Player player, int position, int chessType){
+		if(!player.checkInvt(chessType) || (board.get(position).get(chessType) != 0)){
 			return false;
+		}
 		board.get(position).set(chessType, player.getId());
-		//may need to change to player 1->1, player 2->10, player 3->100, player 4->1000
 		player.minusChess(chessType);
 		return true;
+		
 	}
+	
+	public ArrayList<Integer> getBoard(int input){
+		return board.get(input);
+	}
+	
+	
+
+
 	//check condition wrap up win condition
 	private void checkWin(){
 		//if win {
