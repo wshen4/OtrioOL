@@ -23,25 +23,38 @@ public class Chessboard {
 		board.get(position).set(chessType, player.getId());
 		player.minusChess(chessType);
 		return true;
-		
 	}
 	
 	public ArrayList<Integer> getBoard(int input){
 		return board.get(input);
 	}
 	
-	
-
-
 	//check condition wrap up win condition
-	private void checkWin(){
-		//if win {
-		//pop-up window says:
-		System.out.println("Player " + "Wins!");
-		//go back to the main window
-		//else
-		//continue;
-			
+	private boolean checkWin(Player player){
+		int currentPlayer = player.getId();
+		//1.check for player 1		
+		//	(1).check if the three chess in one position
+		if (currentPlayer == 1) {
+			for (int i = 0; i < 9; i++){
+				int sum = board.get(i).get(0) + board.get(i).get(1) + board.get(i).get(2);
+				if (sum == 3) {
+					return true;
+				}
+			}//end for
+		}//end if
+		
+		//check for player 2
+		//	(1).check if the three chess in one position
+		else {
+			for (int i = 0; i < 9; i++){
+				int sum = board.get(i).get(0) + board.get(i).get(1) + board.get(i).get(2);
+				if (sum == 6) {
+					return true;
+				}
+			}//end for
+		}//end if
+		//	(2). check if t
+		return false;	
 	}
 	//win condition warp up
 	//win condition one: three in the roll
