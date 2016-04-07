@@ -41,7 +41,7 @@ public class Chessboard {
 		return board.get(input);
 	}
 	
-	private boolean checkWin(Player player){
+	public boolean checkWin(Player player){
 		//record current player
 		int currentPlayer = player.getId();		
 		//	(1).check if the three chess in one position

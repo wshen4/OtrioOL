@@ -336,6 +336,10 @@ public class Main extends Application{
 								circles.get(i).get(2 - j).setFill(Color.DEEPPINK);
 						}
 					}
+					
+					if (board.checkWin(player1))
+						System.out.print("player1 win");
+					
 					makeMoveButton.setVisible(false);
 					makeMoveButton2.setVisible(true);
 				}
