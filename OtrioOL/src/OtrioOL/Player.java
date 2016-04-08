@@ -14,6 +14,15 @@ public class Player {
 		}
 	}
 	
+	//Copy Constructor
+	public Player(Player prototype){
+		this.pId = prototype.pId;
+		this.inventary = new ArrayList<Integer>();
+		for (int i = 0; i < 3; i++){
+			inventary.add(prototype.inventary.get(i));
+		}
+	}
+	
 	public int getId(){
 		return this.pId;
 	}

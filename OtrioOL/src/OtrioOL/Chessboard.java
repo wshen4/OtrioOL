@@ -27,6 +27,30 @@ public class Chessboard {
 			threeWay.add(array1);
 		}
 	}
+	
+	//Copy Constructor
+	public Chessboard(Chessboard prototype){
+		board = new ArrayList<ArrayList<Integer>>();
+		for(int i = 0; i < 9; i++){
+			ArrayList<Integer> tmp = new ArrayList<Integer>();
+			for (int j = 0; j < 3; j++){
+				tmp.add(prototype.getBoard(i).get(j));
+			}
+			board.add(tmp);
+		}
+		//build an new ArrayList to save three possible position in a roll 
+		threeWay = new ArrayList<ArrayList<Integer>>();
+		//all possible combination of three position in a roll, every three number is a set
+		int a[] = {0,1,2,0,3,6,6,7,8,2,5,8,1,4,7,3,4,5,0,4,8,2,4,6};
+		for (int i = 0; i < 8; i++) {
+			ArrayList array1 = new ArrayList();
+			for (int j = 0; j < 3; j ++) {
+				array1.add(a[i * 3 + j]);
+			}
+			threeWay.add(array1);
+		}
+		
+	}
 
 	public boolean putChess(Player player, int position, int chessType){
 		if(!player.checkInvt(chessType) || (board.get(position).get(chessType) != 0)){
@@ -37,12 +61,6 @@ public class Chessboard {
 		return true;
 	}
 	
-	public boolean checkPut(Player player, int position, int chessType){
-		if(!player.checkInvt(chessType) || (board.get(position).get(chessType) != 0)){
-			return false;
-		}
-		return true;
-	}
 	
 	public ArrayList<Integer> getBoard(int input){
 		return board.get(input);

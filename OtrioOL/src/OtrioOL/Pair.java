@@ -11,12 +11,21 @@ public class Pair {
 		
 	}
 	
+	//getter
 	public int getChessType(){
 		return this.chessType;
 	}
 	
+	
 	public int getPutPosition(){
 		return this.putPosition;
 	}
+	
+	//setter
+	public void setPair(int c, int p){
+		this.chessType = c;
+		this.putPosition = p;
+	}
+	
 
 }

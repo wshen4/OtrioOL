@@ -599,7 +599,7 @@ public class Main extends Application{
 			makeMoveButton.setVisible(true);
 		else{
 			try{
-				Pair responseAI = player2.moveEasy(board, player1, player2);
+				Pair responseAI = player2.moveEasy(board, player1);
 				
 				int chosenPos2 = responseAI.getPutPosition();
 				int chessType2 = responseAI.getChessType();
@@ -679,6 +679,7 @@ public class Main extends Application{
 					if (board.checkWin(player1)){
 						sayWin.setText(player1Name + " Win!");
 						makeMoveButton.setVisible(false);
+						return;
 					}
 					
 					//check tie
@@ -690,7 +691,7 @@ public class Main extends Application{
 					
 					//AI's Move
 					try{
-						Pair responseAI = player2.moveEasy(board, player1, player2);
+						Pair responseAI = player2.moveEasy(board, player1);
 						
 						int chosenPos2 = responseAI.getPutPosition();
 						int chessType2 = responseAI.getChessType();
@@ -810,7 +811,7 @@ public class Main extends Application{
 		//VBox Layout
 		VBox menuLayout = new VBox(20);
 		menuLayout.setPadding(new Insets(80,50,50,300));
-		menuLayout.getChildren().addAll(oneVsOne, aiGame, backButton);
+		menuLayout.getChildren().addAll(aiGame, oneVsOne, backButton);
 		
 		//For one on one local game
 		TextField namePlayer1 = new TextField("Player1");
@@ -836,7 +837,7 @@ public class Main extends Application{
 			menuLayout.getChildren().clear();
 			p1FirstRB.setText("Player 1 goes first");
 			p2FirstRB.setText("Player 2 goes first");
-			menuLayout.getChildren().addAll(oneVsOne, namePlayer1, namePlayer2, toggleBox, startGameButton, aiGame, backButton);
+			menuLayout.getChildren().addAll(aiGame, oneVsOne, namePlayer1, namePlayer2, toggleBox, startGameButton, backButton);
 			
 		});
 		
@@ -854,7 +855,7 @@ public class Main extends Application{
 		RadioButton hardRB = new RadioButton("Hard");
 		hardRB.setToggleGroup(diffToggle);
 		hardRB.setUserData(AI.HARD);
-		difficultBox.getChildren().addAll(easyRB, mediumRB, hardRB);
+		difficultBox.getChildren().addAll(easyRB);
 		easyRB.setSelected(true);
 		Button startAI = new Button("Start Game");
 		startAI.setOnAction(e -> {
@@ -866,7 +867,7 @@ public class Main extends Application{
 			menuLayout.getChildren().clear();
 			p1FirstRB.setText("You go first");
 			p2FirstRB.setText("You go second");
-			menuLayout.getChildren().addAll(oneVsOne, aiGame, namePlayer, difficultBox, toggleBox, startAI, backButton);
+			menuLayout.getChildren().addAll(aiGame, namePlayer, difficultBox, toggleBox, startAI, oneVsOne, backButton);
 		});
 		
 		
@@ -883,7 +884,7 @@ public class Main extends Application{
 	
 	//Function for navigating to the welcome scene
 	private static void goToWelcome(){
-		window.setTitle("Otrio Online");
+		window.setTitle("Otrio");
 		//play audio
 		
 		
