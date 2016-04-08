@@ -46,58 +46,58 @@ public class Chessboard {
 		int currentPlayer = player.getId();		
 		//	(1).check if the three chess in one position
 		for (int i = 0; i < 9; i++){
-			int sum = board.get(i).get(0) + board.get(i).get(1) + board.get(i).get(2);
-			if (sum == currentPlayer * 3) {					
+			if (board.get(i).get(0) == currentPlayer && board.get(i).get(1) == currentPlayer && board.get(i).get(2) == currentPlayer) {					
 				return true;
 			}
-		}//end for
+		}
+		
 		//	(2). check if three in the roll
 		// create a arraylist to save the sequence if there are three position in the three
-		ArrayList<Integer> threeInRoll = new ArrayList<Integer>();
-		for (int i = 0; i < 8; i++) {
-			ArrayList<Integer> tmp = new ArrayList<Integer>();
-			int sum[] = {};
+		 ArrayList<ArrayList<Integer>> threeInRoll = new ArrayList<ArrayList<Integer>>();
+		 for (int i = 0; i < 8; i++) {
+			int sum[] = new int[3];
 			for (int j = 0; j < 3; j++) {
-				tmp.add(threeWay.get(i).get(j));
-				sum[j] = (board.get(tmp.get(j)).contains(currentPlayer)) ? 1 :0 ;
+				sum[j] = (board.get(threeWay.get(i).get(j)).contains(currentPlayer)) ? 1 :0 ;
 			}
-			if (sum[0] + sum[1] + sum[2] == 1) {
-				threeInRoll.addAll(tmp);
+			if (sum[0] + sum[1] + sum[2] == 3) {
+				threeInRoll.add(threeWay.get(i));
+				System.out.println("three in roll");
+				//System.out.println(sum[0] + sum[1] + sum[2]);
 				continue;
 			}
-			else {
-				return false;
-			}
 		}
+		if (threeInRoll.isEmpty()) {
+			return false;
+		}		
 		// (3). check if all three chess are in right order: small-med-big; b-m-s; s-s-s; m-m-m; b-b-b
-		// s-m-b
-		if (board.get(threeInRoll.get(0)).get(0) == 0 && board.get(threeInRoll.get(1)).get(1) == 1 && 
-			board.get(threeInRoll.get(2)).get(2) == 2) {
-			return true;
-		}
-		//b-m-s
-		else if (board.get(threeInRoll.get(0)).get(0) == 2 && board.get(threeInRoll.get(1)).get(1) == 1 && 
-			board.get(threeInRoll.get(2)).get(2) == 0) {
-			return true;
-		}
-		//b-b-b
-		else if (board.get(threeInRoll.get(0)).get(0) == 2 && board.get(threeInRoll.get(1)).get(1) == 2 && 
-				board.get(threeInRoll.get(2)).get(2) == 2) {
+		for (int i = 0; i < threeInRoll.size(); i++){
+			// s-m-b
+			if (board.get(threeInRoll.get(i).get(0)).get(0) == currentPlayer && board.get(threeInRoll.get(i).get(1)).get(1) == currentPlayer && 
+					board.get(threeInRoll.get(i).get(2)).get(2) == currentPlayer) {
 				return true;
-		}
-		//m-m-m
-		else if (board.get(threeInRoll.get(0)).get(0) == 1 && board.get(threeInRoll.get(1)).get(1) == 1 && 
-				board.get(threeInRoll.get(2)).get(2) == 1) {
+			}
+			//b-m-s
+			else if (board.get(threeInRoll.get(i).get(0)).get(2) == currentPlayer && board.get(threeInRoll.get(i).get(1)).get(1) == currentPlayer && 
+					board.get(threeInRoll.get(i).get(2)).get(0) == currentPlayer) {
 				return true;
-		}
-		//s-s-s
-		else if (board.get(threeInRoll.get(0)).get(0) == 0 && board.get(threeInRoll.get(1)).get(1) == 0 && 
-				board.get(threeInRoll.get(2)).get(2) == 0) {
+			}
+			//b-b-b
+			else if (board.get(threeInRoll.get(i).get(0)).get(2) == currentPlayer && board.get(threeInRoll.get(i).get(1)).get(2) == currentPlayer && 
+					board.get(threeInRoll.get(i).get(2)).get(2) == currentPlayer) {
 				return true;
-		}
-		//not in order return false
-		else 
-			return false;	
-	}	
+			}
+			//m-m-m
+			else if (board.get(threeInRoll.get(i).get(0)).get(1) == currentPlayer && board.get(threeInRoll.get(i).get(1)).get(1) == currentPlayer && 
+					board.get(threeInRoll.get(i).get(2)).get(1) == currentPlayer) {
+				return true;
+			}
+			//s-s-s
+			else if (board.get(threeInRoll.get(i).get(0)).get(0) == currentPlayer && board.get(threeInRoll.get(i).get(1)).get(0) == currentPlayer && 
+					board.get(threeInRoll.get(i).get(2)).get(0) == currentPlayer) {
+				return true;
+			}	
+		}	
+		return false;	
+	}
 }
 

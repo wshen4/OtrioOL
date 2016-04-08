@@ -337,8 +337,8 @@ public class Main extends Application{
 						}
 					}
 					
-					//if (board.checkWin(player1))
-					//	System.out.print("player1 win");
+					if (board.checkWin(player1))
+						System.out.print("player1 win");
 					
 					makeMoveButton.setVisible(false);
 					makeMoveButton2.setVisible(true);
