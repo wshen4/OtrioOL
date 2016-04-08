@@ -295,6 +295,9 @@ public class Main extends Application{
 		boardBack.getChildren().add(col3);
 		boardBack.setPadding(new Insets(50, 50, 50, 50));
 		
+		Label sayWin = new Label();
+		
+		
 		
 		//For Player 1
 		Button makeMoveButton2 = new Button("Make Your Move");
@@ -337,11 +340,20 @@ public class Main extends Application{
 						}
 					}
 					
-					if (board.checkWin(player1))
-						System.out.print("player1 win");
-					
 					makeMoveButton.setVisible(false);
 					makeMoveButton2.setVisible(true);
+					
+					if (board.checkWin(player1)){
+						sayWin.setText("Player 1 Win!");
+						makeMoveButton.setVisible(false);
+						makeMoveButton2.setVisible(false);
+					}
+					
+					
+					
+					
+					
+					
 				}
 			}catch(NumberFormatException nfe){
 				//System.err.println("Wrong input type");
@@ -400,8 +412,21 @@ public class Main extends Application{
 						}
 						
 					}
+					
 					makeMoveButton2.setVisible(false);
 					makeMoveButton.setVisible(true);
+					
+					if (board.checkWin(player2)){
+						sayWin.setText("Player 2 Win!");
+						makeMoveButton.setVisible(false);
+						makeMoveButton2.setVisible(false);
+					}
+					
+					if (!player2.checkInvt(0) && !player2.checkInvt(1) && !player2.checkInvt(2)
+							&& !board.checkWin(player1) && !board.checkWin(player2)){
+						sayWin.setText("Tie!");
+					}
+					
 				}
 			}catch(NumberFormatException nfe){
 				//System.err.println("Wrong input type");
@@ -432,6 +457,7 @@ public class Main extends Application{
 		gameLayout.setLeft(player1Layout);
 		gameLayout.setRight(player2Layout);
 		gameLayout.setCenter(boardBack);
+		gameLayout.setBottom(sayWin);
 		
 		
 		Scene gameScene = new Scene(gameLayout, 900, 700);
@@ -484,7 +510,7 @@ public class Main extends Application{
 		BorderPane settingLayout = new BorderPane();
 		//Buttons
 		//back
-		Button backButton = new Button("Back");
+		Button backButton = new Button("Back To The Welcome Page");
 		backButton.setEffect(new DropShadow());
 		backButton.setOnAction(e -> {
 			goToWelcome();
@@ -497,14 +523,14 @@ public class Main extends Application{
 		});
 			
 		//local game
-		Button oneVsOne = new Button("Player VS Player Local");
+		Button oneVsOne = new Button("Player VS Player In The Same Computer");
 		oneVsOne.setEffect(new DropShadow());
 		oneVsOne.setOnAction(e -> {
 			LocalPeopleGames();
 		});
 		//VBox Layout
 		VBox menuLayout = new VBox(40);
-		menuLayout.setPadding(new Insets(200,50,50,350));
+		menuLayout.setPadding(new Insets(200,50,50,300));
 			
 		menuLayout.getChildren().add(oneVsOne);
 		menuLayout.getChildren().add(backButton);

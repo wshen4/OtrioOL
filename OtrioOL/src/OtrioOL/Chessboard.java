@@ -61,7 +61,7 @@ public class Chessboard {
 			}
 			if (sum[0] + sum[1] + sum[2] == 3) {
 				threeInRoll.add(threeWay.get(i));
-				System.out.println("three in roll");
+				//System.out.println("three in roll");
 				//System.out.println(sum[0] + sum[1] + sum[2]);
 				continue;
 			}
