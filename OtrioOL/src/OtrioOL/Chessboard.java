@@ -37,6 +37,13 @@ public class Chessboard {
 		return true;
 	}
 	
+	public boolean checkPut(Player player, int position, int chessType){
+		if(!player.checkInvt(chessType) || (board.get(position).get(chessType) != 0)){
+			return false;
+		}
+		return true;
+	}
+	
 	public ArrayList<Integer> getBoard(int input){
 		return board.get(input);
 	}
