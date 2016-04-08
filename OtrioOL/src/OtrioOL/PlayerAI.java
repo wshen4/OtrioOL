@@ -37,7 +37,9 @@ public class PlayerAI extends Player{
 		checkChessAI();
 		int chessType = allChess.get(new Random().nextInt(allChess.size()));
 		checkPos(chessType, board);
-		int position = putable.get(chessType).get(new Random().nextInt(putable.get(chessType).size()));
+		int x = putable.get(chessType).size();
+		int position = putable.get(chessType).get(new Random().nextInt(x));
+		
 		Pair res = new Pair(chessType, position);
 		
 		//defense human player's move (Second most important)
@@ -51,9 +53,9 @@ public class PlayerAI extends Player{
 	}
 	
 	private void checkChessAI(){
-		for (int i = 0; i < allChess.size(); i++){
+		for (int i = 0; i < 3; i++){
 			if (!this.checkInvt(i)){
-				allChess.remove(i);
+				allChess.remove(new Integer(i));
 			}
 		}
 	}
@@ -61,7 +63,7 @@ public class PlayerAI extends Player{
 	private void checkPos(int chessType, Chessboard board){
 		for (int i = 0; i < putable.get(chessType).size(); i++){
 			if (board.getBoard(i).get(chessType) != 0){
-				putable.get(chessType).remove(i);
+				putable.get(chessType).remove(new Integer(i));
 			}
 		}
 	}

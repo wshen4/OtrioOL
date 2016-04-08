@@ -598,7 +598,7 @@ public class Main extends Application{
 		if (player1GoesFirst)
 			makeMoveButton.setVisible(true);
 		else{
-			try{
+			//try{
 				Pair responseAI = player2.moveEasy(board, player1);
 				
 				int chosenPos2 = responseAI.getPutPosition();
@@ -628,9 +628,9 @@ public class Main extends Application{
 				}
 					
 			}
-			}catch(NumberFormatException nfe){
+			//}catch(NumberFormatException nfe){
 				//err
-			}
+			//}
 			
 		}
 		
@@ -690,7 +690,7 @@ public class Main extends Application{
 					}
 					
 					//AI's Move
-					try{
+					//try{
 						Pair responseAI = player2.moveEasy(board, player1);
 						
 						int chosenPos2 = responseAI.getPutPosition();
@@ -720,9 +720,9 @@ public class Main extends Application{
 						}
 							
 					}
-					}catch(NumberFormatException nfe){
+					//}catch(NumberFormatException nfe){
 						//err
-					}
+					//}
 					
 					
 				}
