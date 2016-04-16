@@ -20,7 +20,7 @@ public class Chessboard {
 		//all possible combination of three position in a roll, every three number is a set
 		int a[] = {0,1,2,0,3,6,6,7,8,2,5,8,1,4,7,3,4,5,0,4,8,2,4,6};
 		for (int i = 0; i < 8; i++) {
-			ArrayList array1 = new ArrayList();
+			ArrayList<Integer> array1 = new ArrayList<Integer>();
 			for (int j = 0; j < 3; j ++) {
 				array1.add(a[i * 3 + j]);
 			}
@@ -43,7 +43,7 @@ public class Chessboard {
 		//all possible combination of three position in a roll, every three number is a set
 		int a[] = {0,1,2,0,3,6,6,7,8,2,5,8,1,4,7,3,4,5,0,4,8,2,4,6};
 		for (int i = 0; i < 8; i++) {
-			ArrayList array1 = new ArrayList();
+			ArrayList<Integer> array1 = new ArrayList<Integer>();
 			for (int j = 0; j < 3; j ++) {
 				array1.add(a[i * 3 + j]);
 			}

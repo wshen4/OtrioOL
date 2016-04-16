@@ -17,6 +17,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaPlayerBuilder;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -24,6 +25,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.geometry.Insets;	
 
+import java.nio.file.Paths;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -40,7 +42,6 @@ public class Main extends Application{
 	}
 	
 	//Human 1 v 1 game locally
-	
 	private static void LocalPeopleGames(String player1Name, String player2Name, Boolean player1GoesFirst){
 		
 		//Refresh game objects
@@ -313,27 +314,33 @@ public class Main extends Application{
 	
 	//Local human VS computer 
 	private static void LocalAIGames(String player1Name, AI difficulty, Boolean player1GoesFirst){
-		//setting name for AI
-		String player2Name;
-		switch (difficulty){
-		case EASY:
-			player2Name = "Easy Computer";
-			break;
-		case MEDIUM:
-			player2Name = "Medium Computer";
-			break;
-		case HARD:
-			player2Name = "Hard Computer";
-			break;
-		default:
-			player2Name = "Computer";
-		}
-
 		//Refresh game objects
 		Chessboard board = new Chessboard();
 		Player player1 = new Player(1);
-		PlayerAI player2 = new PlayerAI(2);
 		
+		//setting name and difficulty level for AI
+		PlayerAI player2;
+		String player2Name;
+		switch (difficulty){
+		case EASY:
+			player2 = new PlayerAIEasy(2);
+			player2Name = "Easy Computer";
+			break;
+		case MEDIUM:
+			player2 = new PlayerAIMedium(2);
+			player2Name = "Medium Computer";
+			break;
+		case HARD:
+			player2 = new PlayerAIHard(2);
+			player2Name = "Hard Computer";
+			break;
+		default:
+			player2 = new PlayerAIMedium(2);
+			player2Name = "Computer";
+		}
+
+		
+
 		//gaming layout
 		BorderPane gameLayout =  new BorderPane();
 		
@@ -416,7 +423,6 @@ public class Main extends Application{
 		makeMoveButton.setVisible(false);
 		
 		//AI player inventory display
-		
 		Label smallAI = new Label("Small " + Integer.toString(player2.getSchess()));
 		Label mediumAI = new Label("Medium " + Integer.toString(player2.getMchess()));
 		Label largeAI = new Label("Large " + Integer.toString(player2.getLchess()));
@@ -424,7 +430,7 @@ public class Main extends Application{
 		if (player1GoesFirst)
 			makeMoveButton.setVisible(true);
 		else{
-			Pair responseAI = player2.moveEasy(board, player1, true);
+			Pair responseAI = player2.move(board, player1, true);
 				
 			int chosenPos2 = responseAI.getPutPosition();
 			int chessType2 = responseAI.getChessType();
@@ -506,8 +512,7 @@ public class Main extends Application{
 					}
 					
 					//AI's Move
-					
-					Pair responseAI = player2.moveEasy(board, player1, false);
+					Pair responseAI = player2.move(board, player1, false);
 						
 					int chosenPos2 = responseAI.getPutPosition();
 					int chessType2 = responseAI.getChessType();
@@ -658,8 +663,8 @@ public class Main extends Application{
 		RadioButton hardRB = new RadioButton("Hard");
 		hardRB.setToggleGroup(diffToggle);
 		hardRB.setUserData(AI.HARD);
-		difficultBox.getChildren().addAll(easyRB);
-		easyRB.setSelected(true);
+		difficultBox.getChildren().addAll(easyRB, mediumRB, hardRB);
+		mediumRB.setSelected(true);
 		Button startAI = new Button("Start Game");
 		startAI.setOnAction(e -> {
 			LocalAIGames(namePlayer.getText(), (AI) diffToggle.getSelectedToggle().getUserData(), 
@@ -769,7 +774,7 @@ public class Main extends Application{
 		window.show();
 	}
 	
-private static void LocalPeopleGamesDemo(){
+	private static void LocalPeopleGamesDemo(){
 		
 		//order of move
 		boolean playerOneMove = true;
