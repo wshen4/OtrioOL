@@ -596,7 +596,6 @@ public class Main extends Application{
 			
 	}
 	
-	
 	//function for game setting
 	private static void setting(){
 		//setup new scene
@@ -616,10 +615,22 @@ public class Main extends Application{
 		Button aiGame = new Button("Player VS Computer");
 		aiGame.setEffect(new DropShadow());
 		
+		//online game
+		//Server
+		Button serverBtn = new Button("Server");
+		serverBtn.setOnAction(e -> {
+			gameServer();
+		});
+		//Client
+		Button clientBtn = new Button("Client");
+		clientBtn.setOnAction(e -> {
+			gameClient();
+		});
+		
 		//VBox Layout
 		VBox menuLayout = new VBox(20);
 		menuLayout.setPadding(new Insets(80,50,50,300));
-		menuLayout.getChildren().addAll(aiGame, oneVsOne, backButton);
+		menuLayout.getChildren().addAll(aiGame, oneVsOne, serverBtn, clientBtn, backButton);
 		
 		//For one on one local game
 		TextField namePlayer1 = new TextField("Player1");
@@ -678,6 +689,8 @@ public class Main extends Application{
 			menuLayout.getChildren().addAll(aiGame, namePlayer, difficultBox, toggleBox, startAI, oneVsOne, backButton);
 		});
 		
+		
+		
 		settingLayout.setCenter(menuLayout);
 		//settingLayout.setPadding(new Insets(50,50,50,50));
 		
@@ -687,9 +700,8 @@ public class Main extends Application{
 		
 	}
 	
-	
 	//Function for navigating to the welcome scene
-	private static void goToWelcome(){
+	static void goToWelcome(){
 		window.setTitle("Otrio");
 		//play audio
 		
@@ -725,8 +737,17 @@ public class Main extends Application{
 		window.show();	
 	}
 	
+	//Fuction for OLServer Game
+	private static void gameServer(){
+		window.setScene(OLServer.startServerGame("Server", "Client", true));
+		window.show();
+	}
+	//Fuction for OLClient Game
+	private static void gameClient(){
+		window.setScene(OLClient.startClientGame("Server", "Client", true));
+		window.show();
+	}
 	
-
 	@Override
 	public void start(Stage arg0) throws Exception {
 		// TODO Auto-generated method stub
