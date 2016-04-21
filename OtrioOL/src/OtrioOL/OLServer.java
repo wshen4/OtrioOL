@@ -26,6 +26,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.geometry.Insets;	
 
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Paths;
@@ -46,6 +47,9 @@ public class OLServer{
 	private static boolean gameover;
 	
 	public static Scene startServerGame(String player1Name, String player2Name, Boolean player1GoesFirst) throws IOException{
+		InetAddress host = InetAddress.getLocalHost();  
+		String serverAddress = host.getHostAddress(); 
+		System.out.print(serverAddress);
 		
 		//Refresh game objects
 		serverSocket = new ServerSocket(port);
