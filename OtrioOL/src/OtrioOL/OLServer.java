@@ -42,7 +42,7 @@ public class OLServer{
 	private static ServerSocket serverSocket;
 
 	private static String input;
-	private final static int port = 5000; 
+	private static int port = 5000; 
 	
 	private static boolean gameover;
 	
@@ -218,9 +218,6 @@ public class OLServer{
 		smallRB.setSelected(true);
 		
 		
-		
-		
-		
 		makeMoveButton.setOnAction(e -> {
 			try{
 				//Server Player make choice
@@ -247,6 +244,7 @@ public class OLServer{
 					if (board.checkWin(player1)){
 						Main.result(player1Name + " Win!");
 						gameover = true;
+						port++;
 						try {
 							socket.close();
 						} catch (Exception e1) {
@@ -258,6 +256,7 @@ public class OLServer{
 							&& !board.checkWin(player1) && !board.checkWin(player2)){
 						Main.result(player1Name + " " + player2Name + " " + "have a tie!");
 						gameover = true;
+						port++;
 						try {
 							socket.close();
 						} catch (Exception e1) {
@@ -310,6 +309,7 @@ public class OLServer{
 									if (board.checkWin(player2)){
 										Main.result(player2Name + " Win!");
 										gameover = true;
+										port++;
 										try {
 											socket.close();
 										} catch (Exception e1) {
@@ -321,6 +321,7 @@ public class OLServer{
 										
 										Main.result(player1Name + " " + player2Name + " " + "have a tie!");
 										gameover = true;
+										port++;
 										try {
 											socket.close();
 										} catch (Exception e1) {

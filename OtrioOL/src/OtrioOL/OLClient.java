@@ -38,7 +38,7 @@ public class OLClient{
 	private static String output;
 	
 	private static Socket socket;
-	private final static int port = 5000;
+	private static int port = 5000;
 	//private static String serverAddress;
 	private static boolean gameover;
 	
@@ -252,12 +252,14 @@ public class OLClient{
 
 						Main.result(player2Name + " Win!");
 						gameover = true;
+						port++;
 					}
 					
 					if (!player2.checkInvt(0) && !player2.checkInvt(1) && !player2.checkInvt(2)
 							&& !board.checkWin(player1) && !board.checkWin(player2)){
 						Main.result(player1Name + " " + player2Name + " " + "have a tie!");
 						gameover = true;
+						port++;
 					}
 					
 					//Parse to String and prepare to send over
@@ -306,11 +308,13 @@ public class OLClient{
 											
 											Main.result(player1Name + " Win!");
 											gameover = true;
+											port++;
 										}
 										if (!player1.checkInvt(0) && !player1.checkInvt(1) && !player1.checkInvt(2)
 												&& !board.checkWin(player1) && !board.checkWin(player2)){
 											Main.result(player1Name + " " + player2Name + " " + "have a tie!");
 											gameover = true;
+											port++;
 										}
 										
 										
@@ -329,6 +333,7 @@ public class OLClient{
 								// TODO Auto-generated method stub
 						 		if (!gameover)
 						 			writeT.start();
+						 		
 							}
 					};
 					timer.schedule(delayedThreadStartTask, 1000);
