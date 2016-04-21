@@ -40,6 +40,7 @@ public class OLClient{
 	private static Socket socket;
 	private final static int port = 5000;
 	//private static String serverAddress;
+	private static boolean gameover;
 	
 	public static Scene startClientGame(String player1Name, String player2Name, Boolean player1GoesFirst, String serverAddress){
 		
@@ -49,6 +50,7 @@ public class OLClient{
 		Player player1 = new Player(1);
 		Player player2 = new Player(2);
 		Label p1Waiting = new Label();
+		gameover = false;
 		
 		
 		//gaming layout
@@ -249,11 +251,13 @@ public class OLClient{
 					if (board.checkWin(player2)){
 
 						Main.result(player2Name + " Win!");
+						gameover = true;
 					}
 					
 					if (!player2.checkInvt(0) && !player2.checkInvt(1) && !player2.checkInvt(2)
 							&& !board.checkWin(player1) && !board.checkWin(player2)){
 						Main.result(player1Name + " " + player2Name + " " + "have a tie!");
+						gameover = true;
 					}
 					
 					//Parse to String and prepare to send over
@@ -301,10 +305,12 @@ public class OLClient{
 										if (board.checkWin(player1)){
 											
 											Main.result(player1Name + " Win!");
+											gameover = true;
 										}
 										if (!player1.checkInvt(0) && !player1.checkInvt(1) && !player1.checkInvt(2)
 												&& !board.checkWin(player1) && !board.checkWin(player2)){
 											Main.result(player1Name + " " + player2Name + " " + "have a tie!");
+											gameover = true;
 										}
 										
 										
@@ -321,7 +327,8 @@ public class OLClient{
 						 	@Override
 						 	public void run() {
 								// TODO Auto-generated method stub
-						 		writeT.start();
+						 		if (!gameover)
+						 			writeT.start();
 							}
 					};
 					timer.schedule(delayedThreadStartTask, 1000);
