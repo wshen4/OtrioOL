@@ -619,7 +619,11 @@ public class Main extends Application{
 		//Server
 		Button serverBtn = new Button("Server");
 		serverBtn.setOnAction(e -> {
-			gameServer();
+			try {
+				gameServer();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 		});
 		//Client
 		Button clientBtn = new Button("Client");
@@ -738,13 +742,15 @@ public class Main extends Application{
 	}
 	
 	//Fuction for OLServer Game
-	private static void gameServer(){
+	private static void gameServer() throws IOException{
 		window.setScene(OLServer.startServerGame("Server", "Client", true));
+		window.setTitle("Server");
 		window.show();
 	}
 	//Fuction for OLClient Game
 	private static void gameClient(){
 		window.setScene(OLClient.startClientGame("Server", "Client", true));
+		window.setTitle("Client");
 		window.show();
 	}
 	

@@ -1,6 +1,7 @@
 package OtrioOL;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -31,7 +32,7 @@ import java.nio.file.Paths;
 import java.io.*;
 import java.util.ArrayList;
 
-public class OLServer implements Delivery{
+public class OLServer{
 	
 	private static Socket socket;
 	private static ServerSocket serverSocket;
@@ -39,9 +40,10 @@ public class OLServer implements Delivery{
 	private static String input;
 	private final static int port = 5000; 
 	
-	public static Scene startServerGame(String player1Name, String player2Name, Boolean player1GoesFirst){
+	public static Scene startServerGame(String player1Name, String player2Name, Boolean player1GoesFirst) throws IOException{
 		
 		//Refresh game objects
+		serverSocket = new ServerSocket(port);
 		Chessboard board = new Chessboard();
 		Player player1 = new Player(1);
 		Player player2 = new Player(2);
@@ -158,13 +160,28 @@ public class OLServer implements Delivery{
 		largeRB.setUserData(2);
 		smallRB.setSelected(true);
 		
+		//Chess Type Selection Radio Button Group
+				ToggleGroup player2Group = new ToggleGroup();
+				RadioButton smallRB2 = new RadioButton("Small " + Integer.toString(player2.getSchess()));
+				smallRB2.setToggleGroup(player2Group);
+				smallRB2.setUserData(0);
+				RadioButton mediumRB2 = new RadioButton("Medium " + Integer.toString(player2.getMchess()));
+				mediumRB2.setToggleGroup(player2Group);
+				mediumRB2.setUserData(1);
+				RadioButton largeRB2 = new RadioButton("Large " + Integer.toString(player2.getLchess()));
+				largeRB2.setToggleGroup(player2Group);
+				largeRB2.setUserData(2);
+				smallRB2.setSelected(true);
+		
 		
 		
 		makeMoveButton.setOnAction(e -> {
 			try{
+				//Server Player make choice
 				int chosenPos = (int) selectPos.getSelectedToggle().getUserData();
 				int chessType = (int) player1Group.getSelectedToggle().getUserData();
 				
+				//Process Server Player's commands
 				if (board.putChess(player1, chosenPos, chessType)){
 					board.putChess(player1, chosenPos, chessType);
 					smallRB.setText("Small " + Integer.toString(player1.getSchess()));
@@ -172,30 +189,84 @@ public class OLServer implements Delivery{
 					largeRB.setText("Large " + Integer.toString(player1.getLchess()));
 					
 					for (int i = 0; i < 9; i++){
-						
 						for (int j = 0; j < 3; j++){
 							if (board.getBoard(i).get(j) == player1.getId())
 								circles.get(i).get(2 - j).setFill(Color.DEEPPINK);
 						}
 					}
-					
-					makeMoveButton.setVisible(false);
-					makeMoveButton2.setVisible(true);
-					
+				
+					//check win
 					if (board.checkWin(player1)){
 						sayWin.setText(player1Name + " Win!");
 						makeMoveButton.setVisible(false);
 						makeMoveButton2.setVisible(false);
 					}
-					
 					if (!player1.checkInvt(0) && !player1.checkInvt(1) && !player1.checkInvt(2)
 							&& !board.checkWin(player1) && !board.checkWin(player2)){
 						sayWin.setText(player1Name + " " + player2Name + " " + "have a tie!");
 						makeMoveButton.setVisible(false);
-						makeMoveButton2.setVisible(false);
 					}
-					
 				}
+				
+				//Parse to String and prepare to send over
+				input = Integer.toString(chosenPos) + Integer.toString(chessType);
+				
+				//Write
+				new Thread(){
+					@Override
+					public void run(){
+						try {
+							socket = serverSocket.accept();
+							write(socket);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}.start();
+				
+				//Waiting to read from client player
+				new Thread(){
+					@Override
+					public void run(){
+						Platform.runLater(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									socket = serverSocket.accept();
+									String data = read(socket);
+									board.putChess(player2, Integer.parseInt(data.substring(0,1)), Integer.parseInt(data.substring(1, 2)));
+									smallRB2.setText("Small " + Integer.toString(player2.getSchess()));
+									mediumRB2.setText("Medium " + Integer.toString(player2.getMchess()));
+									largeRB2.setText("Large " + Integer.toString(player2.getLchess()));
+									for (int i = 0; i < 9; i++){
+										for (int j = 0; j < 3; j++){
+											if (board.getBoard(i).get(j) == player2.getId())
+												circles.get(i).get(2 - j).setFill(Color.TURQUOISE);
+										}
+									}
+									
+									if (board.checkWin(player2)){
+										sayWin.setText(player2Name + " Win!");
+										makeMoveButton.setVisible(false);
+										makeMoveButton2.setVisible(false);
+									}
+									if (!player2.checkInvt(0) && !player2.checkInvt(1) && !player2.checkInvt(2)
+											&& !board.checkWin(player1) && !board.checkWin(player2)){
+										sayWin.setText(player1Name + " " + player2Name + " " + "have a tie!");
+										makeMoveButton.setVisible(false);
+									}
+									
+									
+									} catch (Exception e1) {
+										e1.printStackTrace();
+									}
+								}
+							});
+					}
+				}.start();
+				
+				
+				
 			}catch(NumberFormatException nfe){
 				//System.err.println("Wrong input type");
 			}
@@ -222,58 +293,7 @@ public class OLServer implements Delivery{
 		//For Player2
 		Label playerLabel2 = new Label("Player " + Integer.toString(player2.getId()));
 		
-		//Chess Type Selection Radio Button Group
-		ToggleGroup player2Group = new ToggleGroup();
-		RadioButton smallRB2 = new RadioButton("Small " + Integer.toString(player2.getSchess()));
-		smallRB2.setToggleGroup(player2Group);
-		smallRB2.setUserData(0);
-		RadioButton mediumRB2 = new RadioButton("Medium " + Integer.toString(player2.getMchess()));
-		mediumRB2.setToggleGroup(player2Group);
-		mediumRB2.setUserData(1);
-		RadioButton largeRB2 = new RadioButton("Large " + Integer.toString(player2.getLchess()));
-		largeRB2.setToggleGroup(player2Group);
-		largeRB2.setUserData(2);
-		smallRB2.setSelected(true);
 		
-		
-		makeMoveButton2.setOnAction(e -> {
-			try{
-				int chosenPos2 = (int) selectPos.getSelectedToggle().getUserData();
-				int chessType2 = (int) player2Group.getSelectedToggle().getUserData();
-				if (board.putChess(player2, chosenPos2, chessType2)){
-					board.putChess(player2, chosenPos2, chessType2);
-					smallRB2.setText("Small " + Integer.toString(player2.getSchess()));
-					mediumRB2.setText("Medium " + Integer.toString(player2.getMchess()));
-					largeRB2.setText("Large " + Integer.toString(player2.getLchess()));
-					for (int i = 0; i < 9; i++){
-						for (int j = 0; j < 3; j++){
-							if (board.getBoard(i).get(j) == player2.getId())
-								circles.get(i).get(2 - j).setFill(Color.TURQUOISE);
-						}
-					}
-					
-					makeMoveButton2.setVisible(false);
-					makeMoveButton.setVisible(true);
-					
-					if (board.checkWin(player2)){
-						sayWin.setText(player2Name + " Win!");
-						makeMoveButton.setVisible(false);
-						makeMoveButton2.setVisible(false);
-					}
-					
-					if (!player2.checkInvt(0) && !player2.checkInvt(1) && !player2.checkInvt(2)
-							&& !board.checkWin(player1) && !board.checkWin(player2)){
-						sayWin.setText(player1Name + " " + player2Name + " " + "have a tie!");
-						makeMoveButton.setVisible(false);
-						makeMoveButton2.setVisible(false);
-					}
-					
-				}
-			}catch(NumberFormatException nfe){
-				//System.err.println("Wrong input type");
-			}
-			
-		});
 		
 		//Layout for player 2
 		Image p2Img = new Image("file:OtrioOL/src/OtrioOL/Media/Image/p2.png",true);
@@ -308,18 +328,16 @@ public class OLServer implements Delivery{
 			
 	}
 
-	@Override
-	public int read(Socket socket) throws IOException {
+	public static String read(Socket socket) throws IOException {
 		InputStream is = socket.getInputStream();
         InputStreamReader isr = new InputStreamReader(is);
         BufferedReader br = new BufferedReader(isr);
         String data = br.readLine();
         
-        return Integer.parseInt(data);
+        return data;
 	}
 
-	@Override
-	public void write(Socket socket) throws IOException {
+	public static void write(Socket socket) throws IOException {
 		OutputStream os = socket.getOutputStream();
 		OutputStreamWriter osw = new OutputStreamWriter(os);
 		BufferedWriter bw = new BufferedWriter(osw);   

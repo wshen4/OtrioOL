@@ -1,6 +1,7 @@
 package OtrioOL;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -30,7 +31,7 @@ import java.nio.file.Paths;
 import java.io.*;
 import java.util.ArrayList;
 
-public class OLClient implements Delivery{
+public class OLClient{
 	private static String input;
 	private static String output;
 	
@@ -41,6 +42,7 @@ public class OLClient implements Delivery{
 	public static Scene startClientGame(String player1Name, String player2Name, Boolean player1GoesFirst){
 		
 		//Refresh game objects
+		serverAddress = "192.168.0.9";
 		Chessboard board = new Chessboard();
 		Player player1 = new Player(1);
 		Player player2 = new Player(2);
@@ -125,8 +127,6 @@ public class OLClient implements Delivery{
 		
 		Label sayWin = new Label();
 		
-		
-		
 		//check play order
 		Button makeMoveButton = new Button("Make Your Move");
 		Button makeMoveButton2 = new Button("Make Your Move");
@@ -134,72 +134,55 @@ public class OLClient implements Delivery{
 		makeMoveButton.setVisible(false);
 		makeMoveButton2.setVisible(false);
 		
+		//Chess Type Selection Radio Button Group
+				ToggleGroup player1Group = new ToggleGroup();
+				RadioButton smallRB = new RadioButton("Small " + Integer.toString(player1.getSchess()));
+				smallRB.setToggleGroup(player1Group);
+				smallRB.setUserData(0);
+				RadioButton mediumRB = new RadioButton("Medium " + Integer.toString(player1.getMchess()));
+				mediumRB.setToggleGroup(player1Group);
+				mediumRB.setUserData(1);
+				RadioButton largeRB = new RadioButton("Large " + Integer.toString(player1.getLchess()));
+				largeRB.setToggleGroup(player1Group);
+				largeRB.setUserData(2);
+				smallRB.setSelected(true);
+		
 		if (player1GoesFirst)
-			makeMoveButton.setVisible(true);
+			//Wait for reading server player's input
+			new Thread(){
+			@Override
+			public void run(){
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							socket = new Socket(serverAddress, port);  
+							String data = read(socket);
+							board.putChess(player1, Integer.parseInt(data.substring(0,1)), Integer.parseInt(data.substring(1, 2)));
+							smallRB.setText("Small " + Integer.toString(player1.getSchess()));
+							mediumRB.setText("Medium " + Integer.toString(player1.getMchess()));
+							largeRB.setText("Large " + Integer.toString(player1.getLchess()));
+							for (int i = 0; i < 9; i++){
+								for (int j = 0; j < 3; j++){
+									if (board.getBoard(i).get(j) == player1.getId())
+										circles.get(i).get(2 - j).setFill(Color.DEEPPINK);
+								}
+							}
+							makeMoveButton2.setVisible(true);
+							
+							} catch (Exception e1) {
+								e1.printStackTrace();
+							}
+						}
+					});
+			}
+		}.start();
 		else
 			makeMoveButton2.setVisible(true);
 		
 		
 		//For Player 1
 		Label playerLabel1 = new Label("Player " + Integer.toString(player1.getId()));
-		
-		//TextField chessText = new TextField();
-		//Chess Type Selection Radio Button Group
-		ToggleGroup player1Group = new ToggleGroup();
-		RadioButton smallRB = new RadioButton("Small " + Integer.toString(player1.getSchess()));
-		smallRB.setToggleGroup(player1Group);
-		smallRB.setUserData(0);
-		RadioButton mediumRB = new RadioButton("Medium " + Integer.toString(player1.getMchess()));
-		mediumRB.setToggleGroup(player1Group);
-		mediumRB.setUserData(1);
-		RadioButton largeRB = new RadioButton("Large " + Integer.toString(player1.getLchess()));
-		largeRB.setToggleGroup(player1Group);
-		largeRB.setUserData(2);
-		smallRB.setSelected(true);
-		
-		
-		
-		makeMoveButton.setOnAction(e -> {
-			try{
-				int chosenPos = (int) selectPos.getSelectedToggle().getUserData();
-				int chessType = (int) player1Group.getSelectedToggle().getUserData();
-				
-				if (board.putChess(player1, chosenPos, chessType)){
-					board.putChess(player1, chosenPos, chessType);
-					smallRB.setText("Small " + Integer.toString(player1.getSchess()));
-					mediumRB.setText("Medium " + Integer.toString(player1.getMchess()));
-					largeRB.setText("Large " + Integer.toString(player1.getLchess()));
-					
-					for (int i = 0; i < 9; i++){
-						
-						for (int j = 0; j < 3; j++){
-							if (board.getBoard(i).get(j) == player1.getId())
-								circles.get(i).get(2 - j).setFill(Color.DEEPPINK);
-						}
-					}
-					
-					makeMoveButton.setVisible(false);
-					makeMoveButton2.setVisible(true);
-					
-					if (board.checkWin(player1)){
-						sayWin.setText(player1Name + " Win!");
-						makeMoveButton.setVisible(false);
-						makeMoveButton2.setVisible(false);
-					}
-					
-					if (!player1.checkInvt(0) && !player1.checkInvt(1) && !player1.checkInvt(2)
-							&& !board.checkWin(player1) && !board.checkWin(player2)){
-						sayWin.setText(player1Name + " " + player2Name + " " + "have a tie!");
-						makeMoveButton.setVisible(false);
-						makeMoveButton2.setVisible(false);
-					}
-					
-				}
-			}catch(NumberFormatException nfe){
-				//System.err.println("Wrong input type");
-			}
-			
-		});
 		
 		//Layout for player 1
 		Image p1Img = new Image("file:OtrioOL/src/OtrioOL/Media/Image/p1.png",true);
@@ -216,7 +199,6 @@ public class OLClient implements Delivery{
 		player1Layout.getChildren().add(smallRB);
 		player1Layout.getChildren().add(mediumRB);
 		player1Layout.getChildren().add(largeRB);
-		player1Layout.getChildren().add(makeMoveButton);
 		
 		//For Player2
 		Label playerLabel2 = new Label("Player " + Integer.toString(player2.getId()));
@@ -240,6 +222,7 @@ public class OLClient implements Delivery{
 				int chosenPos2 = (int) selectPos.getSelectedToggle().getUserData();
 				int chessType2 = (int) player2Group.getSelectedToggle().getUserData();
 				if (board.putChess(player2, chosenPos2, chessType2)){
+					//puting chess on the board
 					board.putChess(player2, chosenPos2, chessType2);
 					smallRB2.setText("Small " + Integer.toString(player2.getSchess()));
 					mediumRB2.setText("Medium " + Integer.toString(player2.getMchess()));
@@ -250,9 +233,7 @@ public class OLClient implements Delivery{
 								circles.get(i).get(2 - j).setFill(Color.TURQUOISE);
 						}
 					}
-					
-					makeMoveButton2.setVisible(false);
-					makeMoveButton.setVisible(true);
+					//puting chess on the board
 					
 					if (board.checkWin(player2)){
 						sayWin.setText(player2Name + " Win!");
@@ -263,9 +244,67 @@ public class OLClient implements Delivery{
 					if (!player2.checkInvt(0) && !player2.checkInvt(1) && !player2.checkInvt(2)
 							&& !board.checkWin(player1) && !board.checkWin(player2)){
 						sayWin.setText(player1Name + " " + player2Name + " " + "have a tie!");
-						makeMoveButton.setVisible(false);
+						
 						makeMoveButton2.setVisible(false);
 					}
+					
+					//Parse to String and prepare to send over
+					input = Integer.toString(chosenPos2) + Integer.toString(chessType2);
+					
+					//Write
+					new Thread(){
+						@Override
+						public void run(){
+							try {
+								socket = new Socket(serverAddress, port);  
+								write(socket);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}.start();
+					
+					//Waiting to read from client player
+					new Thread(){
+						@Override
+						public void run(){
+							Platform.runLater(new Runnable() {
+								@Override
+								public void run() {
+									try {
+										socket = new Socket(serverAddress, port);  
+										String data = read(socket);
+										board.putChess(player1, Integer.parseInt(data.substring(0,1)), Integer.parseInt(data.substring(1, 2)));
+										smallRB.setText("Small " + Integer.toString(player1.getSchess()));
+										mediumRB.setText("Medium " + Integer.toString(player1.getMchess()));
+										largeRB.setText("Large " + Integer.toString(player1.getLchess()));
+										for (int i = 0; i < 9; i++){
+											for (int j = 0; j < 3; j++){
+												if (board.getBoard(i).get(j) == player1.getId())
+													circles.get(i).get(2 - j).setFill(Color.DEEPPINK);
+											}
+										}
+										
+										//check win after read data
+										if (board.checkWin(player1)){
+											sayWin.setText(player1Name + " Win!");
+											makeMoveButton.setVisible(false);
+											makeMoveButton2.setVisible(false);
+										}
+										if (!player1.checkInvt(0) && !player1.checkInvt(1) && !player1.checkInvt(2)
+												&& !board.checkWin(player1) && !board.checkWin(player2)){
+											sayWin.setText(player1Name + " " + player2Name + " " + "have a tie!");
+											makeMoveButton.setVisible(false);
+										}
+										
+										
+										} catch (Exception e1) {
+											e1.printStackTrace();
+										}
+									}
+								});
+						}
+					}.start();
 					
 				}
 			}catch(NumberFormatException nfe){
@@ -307,18 +346,16 @@ public class OLClient implements Delivery{
 			
 	}
 
-	@Override
-	public int read(Socket socket) throws IOException {
+	public static String read(Socket socket) throws IOException {
 		InputStream is = socket.getInputStream();
         InputStreamReader isr = new InputStreamReader(is);
         BufferedReader br = new BufferedReader(isr);
         String data = br.readLine();
         
-        return Integer.parseInt(data);
+        return data;
 	}
 
-	@Override
-	public void write(Socket socket) throws IOException {
+	public static void write(Socket socket) throws IOException {
 		OutputStream os = socket.getOutputStream();
 		OutputStreamWriter osw = new OutputStreamWriter(os);
 		BufferedWriter bw = new BufferedWriter(osw);   
