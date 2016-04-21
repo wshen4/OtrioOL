@@ -39,6 +39,7 @@ public class Main extends Application{
 	private static enum AI{
 		EASY, MEDIUM, HARD;
 	}
+	private static int port = 5000;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -621,26 +622,29 @@ public class Main extends Application{
 		aiGame.setEffect(new DropShadow());
 		
 		//online game
+		Button olStartBtn = new Button("Play with other Players online");
+		olStartBtn.setEffect(new DropShadow());
+			//second Level
+			Button createBtn = new Button("Create a Game");
+			Button joinBtn = new Button("Join a Game");
+		
 		//Server
-		Button serverBtn = new Button("Server");
-		serverBtn.setOnAction(e -> {
-			try {
-				gameServer();
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		});
+		Button serverBtn = new Button("Create");
+		
 		//Client
 		Button clientBtn = new Button("Client");
-		TextField addressTxt = new TextField("192.168.0.9");
+		TextField addressTxt = new TextField("192.168.0.11");
+		addressTxt.setMaxWidth(200);
+		TextField portTxt = new TextField("5000");
+		portTxt.setMaxWidth(200);
 		clientBtn.setOnAction(e -> {
-			gameClient(addressTxt.getText());
+			gameClient(addressTxt.getText(), Integer.parseInt(portTxt.getText()));
 		});
 		
 		//VBox Layout
 		VBox menuLayout = new VBox(20);
 		menuLayout.setPadding(new Insets(80,50,50,300));
-		menuLayout.getChildren().addAll(aiGame, oneVsOne, serverBtn, clientBtn, addressTxt, backButton);
+		menuLayout.getChildren().addAll(aiGame, oneVsOne, olStartBtn, backButton);
 		
 		//For one on one local game
 		TextField namePlayer1 = new TextField("Player1");
@@ -666,7 +670,7 @@ public class Main extends Application{
 			menuLayout.getChildren().clear();
 			p1FirstRB.setText("Player 1 goes first");
 			p2FirstRB.setText("Player 2 goes first");
-			menuLayout.getChildren().addAll(aiGame, oneVsOne, namePlayer1, namePlayer2, toggleBox, startGameButton, backButton);
+			menuLayout.getChildren().addAll(aiGame, oneVsOne, namePlayer1, namePlayer2, toggleBox, startGameButton, olStartBtn, backButton);
 			
 		});
 		
@@ -692,14 +696,40 @@ public class Main extends Application{
 					(boolean) checkWhoFirst.getSelectedToggle().getUserData());
 		});
 		
+		p1FirstRB.setText("You go first");
+		p2FirstRB.setText("You go second");
+		
 		aiGame.setOnAction(e -> {
 			menuLayout.getChildren().clear();
-			p1FirstRB.setText("You go first");
-			p2FirstRB.setText("You go second");
-			menuLayout.getChildren().addAll(aiGame, namePlayer, difficultBox, toggleBox, startAI, oneVsOne, backButton);
+			
+			menuLayout.getChildren().addAll(aiGame, namePlayer, difficultBox, toggleBox, startAI, oneVsOne, olStartBtn,backButton);
 		});
 		
+		//Online Game
+		olStartBtn.setOnAction(e -> {
+			menuLayout.getChildren().clear();
+			menuLayout.getChildren().addAll(aiGame, oneVsOne, olStartBtn, createBtn, joinBtn, backButton);
+		});
 		
+		createBtn.setOnAction(e -> {
+			menuLayout.getChildren().clear();
+			menuLayout.getChildren().addAll(aiGame, oneVsOne, olStartBtn, createBtn, toggleBox, serverBtn, joinBtn,backButton);
+			
+		});
+		
+		serverBtn.setOnAction(e -> {
+			try {
+				gameServer((boolean) checkWhoFirst.getSelectedToggle().getUserData());
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		});
+		
+		joinBtn.setOnAction(e -> {
+			menuLayout.getChildren().clear();
+			menuLayout.getChildren().addAll(aiGame, oneVsOne, olStartBtn, createBtn, joinBtn, addressTxt, portTxt, clientBtn, backButton);
+			
+		});
 		
 		settingLayout.setCenter(menuLayout);
 		//settingLayout.setPadding(new Insets(50,50,50,50));
@@ -748,20 +778,23 @@ public class Main extends Application{
 	}
 	
 	//Fuction for OLServer Game
-	private static void gameServer() throws IOException{
-		window.setScene(OLServer.startServerGame("Server", "Client", false));
+	private static void gameServer(boolean player1First) throws IOException{
+		window.setScene(OLServer.startServerGame("Server", "Client", player1First, port));
 		window.setTitle("Server");
 		window.show();
 	}
 	//Fuction for OLClient Game
-	private static void gameClient(String address){
-		window.setScene(OLClient.startClientGame("Server", "Client", false, address));
+	private static void gameClient(String address, int port){
+		window.setScene(OLClient.startClientGame("Server", "Client", address, port));
 		window.setTitle("Client");
 		window.show();
 	}
 	
 	//Functions for game result
 	static void result(String winner){
+		//for the next game, change port
+		port++;
+		
 		BorderPane layout = new BorderPane();
 		Label winLbl = new Label(winner + "\n(click to go back)");
 		winLbl.setFont(new Font("Arial", 30));
@@ -772,6 +805,7 @@ public class Main extends Application{
 		scene.setOnMouseClicked(e -> {
 			goToWelcome();
 		});
+	
 		
 		window.setScene(scene);
 		window.show();

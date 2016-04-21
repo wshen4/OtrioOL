@@ -42,14 +42,20 @@ public class OLServer{
 	private static ServerSocket serverSocket;
 
 	private static String input;
-	private static int port = 5000; 
+	
 	
 	private static boolean gameover;
 	
-	public static Scene startServerGame(String player1Name, String player2Name, Boolean player1GoesFirst) throws IOException{
+	public static Scene startServerGame(String player1Name, String player2Name, Boolean player1GoesFirst, int port) throws IOException{
 		InetAddress host = InetAddress.getLocalHost();  
 		String serverAddress = host.getHostAddress(); 
-		System.out.print(serverAddress);
+		//System.out.println(serverAddress);
+		//System.out.println(port);
+		
+		String info = "Server's Information: \n" + "Address: " + serverAddress + "\n" + "Port: " + Integer.toString(port);
+		Label serverInfo = new Label(info);
+		
+		
 		
 		//Refresh game objects
 		serverSocket = new ServerSocket(port);
@@ -58,6 +64,35 @@ public class OLServer{
 		Player player2 = new Player(2);
 		Label p2Waiting = new Label();
 		gameover = false;
+		
+		//Waiting for connection
+		
+		Thread iniT = new Thread(){
+			@Override
+			public void run(){
+				try {
+					socket = serverSocket.accept();
+					input = (player1GoesFirst) ? "1" : "0";
+					write(socket);
+					input = null;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				
+			}
+		};
+		
+		Timer timerIni = new Timer();
+		TimerTask tkIni = new TimerTask() {
+			 	@Override
+			 	public void run() {
+					// TODO Auto-generated method stub
+			 		iniT.start();
+				}
+		};
+		timerIni.schedule(tkIni, 500);
+		
 		
 		//gaming layout
 		BorderPane gameLayout =  new BorderPane();
@@ -244,7 +279,6 @@ public class OLServer{
 					if (board.checkWin(player1)){
 						Main.result(player1Name + " Win!");
 						gameover = true;
-						port++;
 						try {
 							socket.close();
 						} catch (Exception e1) {
@@ -256,7 +290,7 @@ public class OLServer{
 							&& !board.checkWin(player1) && !board.checkWin(player2)){
 						Main.result(player1Name + " " + player2Name + " " + "have a tie!");
 						gameover = true;
-						port++;
+
 						try {
 							socket.close();
 						} catch (Exception e1) {
@@ -309,7 +343,7 @@ public class OLServer{
 									if (board.checkWin(player2)){
 										Main.result(player2Name + " Win!");
 										gameover = true;
-										port++;
+
 										try {
 											socket.close();
 										} catch (Exception e1) {
@@ -321,7 +355,7 @@ public class OLServer{
 										
 										Main.result(player1Name + " " + player2Name + " " + "have a tie!");
 										gameover = true;
-										port++;
+
 										try {
 											socket.close();
 										} catch (Exception e1) {
@@ -401,7 +435,7 @@ public class OLServer{
 		gameLayout.setLeft(player1Layout);
 		gameLayout.setRight(player2Layout);
 		gameLayout.setCenter(boardBack);
-		gameLayout.setBottom(sayWin);
+		gameLayout.setBottom(serverInfo);
 		
 		return new Scene(gameLayout, 900, 700);
 	}

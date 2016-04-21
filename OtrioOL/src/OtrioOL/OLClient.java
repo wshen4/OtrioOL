@@ -38,19 +38,48 @@ public class OLClient{
 	private static String output;
 	
 	private static Socket socket;
-	private static int port = 5000;
+	private static int port;
 	//private static String serverAddress;
 	private static boolean gameover;
+	private static boolean player1GoesFirst = true;
 	
-	public static Scene startClientGame(String player1Name, String player2Name, Boolean player1GoesFirst, String serverAddress){
+	public static Scene startClientGame(String player1Name, String player2Name, String serverAddress, int port0){
 		
-		//Refresh game objects
-		//serverAddress = "192.168.0.9";
+		//Refresh game objects	
 		Chessboard board = new Chessboard();
 		Player player1 = new Player(1);
 		Player player2 = new Player(2);
 		Label p1Waiting = new Label();
 		gameover = false;
+		port = port0;
+		
+		//confirm connection
+		
+		Thread iniT = new Thread(){
+			@Override
+			public void run(){
+				try {
+					socket = new Socket(serverAddress, port);  
+					String res = read(socket);
+					player1GoesFirst = (res == "1") ? true : false;
+				} catch (IOException e) {
+				
+					e.printStackTrace();
+				}
+				
+			}
+		};
+		
+		Timer timerIni = new Timer();
+		TimerTask tkIni = new TimerTask() {
+			 	@Override
+			 	public void run() {
+					// TODO Auto-generated method stub
+			 		iniT.start();
+				}
+		};
+		timerIni.schedule(tkIni, 500);
+		
 		
 		
 		//gaming layout
@@ -252,14 +281,14 @@ public class OLClient{
 
 						Main.result(player2Name + " Win!");
 						gameover = true;
-						port++;
+						
 					}
 					
 					if (!player2.checkInvt(0) && !player2.checkInvt(1) && !player2.checkInvt(2)
 							&& !board.checkWin(player1) && !board.checkWin(player2)){
 						Main.result(player1Name + " " + player2Name + " " + "have a tie!");
 						gameover = true;
-						port++;
+						
 					}
 					
 					//Parse to String and prepare to send over
@@ -308,13 +337,11 @@ public class OLClient{
 											
 											Main.result(player1Name + " Win!");
 											gameover = true;
-											port++;
 										}
 										if (!player1.checkInvt(0) && !player1.checkInvt(1) && !player1.checkInvt(2)
 												&& !board.checkWin(player1) && !board.checkWin(player2)){
 											Main.result(player1Name + " " + player2Name + " " + "have a tie!");
 											gameover = true;
-											port++;
 										}
 										
 										
