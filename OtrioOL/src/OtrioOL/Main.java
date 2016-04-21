@@ -627,14 +627,15 @@ public class Main extends Application{
 		});
 		//Client
 		Button clientBtn = new Button("Client");
+		TextField addressTxt = new TextField("192.168.0.9");
 		clientBtn.setOnAction(e -> {
-			gameClient();
+			gameClient(addressTxt.getText());
 		});
 		
 		//VBox Layout
 		VBox menuLayout = new VBox(20);
 		menuLayout.setPadding(new Insets(80,50,50,300));
-		menuLayout.getChildren().addAll(aiGame, oneVsOne, serverBtn, clientBtn, backButton);
+		menuLayout.getChildren().addAll(aiGame, oneVsOne, serverBtn, clientBtn, addressTxt, backButton);
 		
 		//For one on one local game
 		TextField namePlayer1 = new TextField("Player1");
@@ -748,8 +749,8 @@ public class Main extends Application{
 		window.show();
 	}
 	//Fuction for OLClient Game
-	private static void gameClient(){
-		window.setScene(OLClient.startClientGame("Server", "Client", true));
+	private static void gameClient(String address){
+		window.setScene(OLClient.startClientGame("Server", "Client", true, address));
 		window.setTitle("Client");
 		window.show();
 	}

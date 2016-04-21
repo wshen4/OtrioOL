@@ -30,6 +30,8 @@ import java.net.Socket;
 import java.nio.file.Paths;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class OLClient{
 	private static String input;
@@ -37,16 +39,16 @@ public class OLClient{
 	
 	private static Socket socket;
 	private final static int port = 5000;
-	private static String serverAddress;
+	//private static String serverAddress;
 	
-	public static Scene startClientGame(String player1Name, String player2Name, Boolean player1GoesFirst){
+	public static Scene startClientGame(String player1Name, String player2Name, Boolean player1GoesFirst, String serverAddress){
 		
 		//Refresh game objects
-		serverAddress = "192.168.0.9";
+		//serverAddress = "192.168.0.9";
 		Chessboard board = new Chessboard();
 		Player player1 = new Player(1);
 		Player player2 = new Player(2);
-		
+		Label p1Waiting = new Label();
 		
 		
 		//gaming layout
@@ -135,21 +137,15 @@ public class OLClient{
 		makeMoveButton2.setVisible(false);
 		
 		//Chess Type Selection Radio Button Group
-				ToggleGroup player1Group = new ToggleGroup();
-				RadioButton smallRB = new RadioButton("Small " + Integer.toString(player1.getSchess()));
-				smallRB.setToggleGroup(player1Group);
-				smallRB.setUserData(0);
-				RadioButton mediumRB = new RadioButton("Medium " + Integer.toString(player1.getMchess()));
-				mediumRB.setToggleGroup(player1Group);
-				mediumRB.setUserData(1);
-				RadioButton largeRB = new RadioButton("Large " + Integer.toString(player1.getLchess()));
-				largeRB.setToggleGroup(player1Group);
-				largeRB.setUserData(2);
-				smallRB.setSelected(true);
-		
-		if (player1GoesFirst)
+				
+		Label smallRB = new Label("Small " + Integer.toString(player1.getSchess()));
+		Label mediumRB = new Label("Medium " + Integer.toString(player1.getMchess()));
+		Label largeRB = new Label("Large " + Integer.toString(player1.getLchess()));
+				
+		if (player1GoesFirst){
 			//Wait for reading server player's input
-			new Thread(){
+			p1Waiting.setText("Waiting for " + player1Name);
+			Thread firstT = new Thread(){
 			@Override
 			public void run(){
 				Platform.runLater(new Runnable() {
@@ -170,16 +166,29 @@ public class OLClient{
 							}
 							makeMoveButton2.setVisible(true);
 							
+							
 							} catch (Exception e1) {
 								e1.printStackTrace();
 							}
 						}
 					});
 			}
-		}.start();
-		else
-			makeMoveButton2.setVisible(true);
+		};
+			
+		Timer timer = new Timer();
+		TimerTask delayedThreadStartTask = new TimerTask() {
+			 	@Override
+			 	public void run() {
+					// TODO Auto-generated method stub
+			 		firstT.start();
+				}
+		};
+		timer.schedule(delayedThreadStartTask, 1000);
+		}
 		
+		else{
+			makeMoveButton2.setVisible(true);
+		}
 		
 		//For Player 1
 		Label playerLabel1 = new Label("Player " + Integer.toString(player1.getId()));
@@ -234,6 +243,8 @@ public class OLClient{
 						}
 					}
 					//puting chess on the board
+					makeMoveButton2.setVisible(false);
+					p1Waiting.setText("Waiting for " + player1Name);
 					
 					if (board.checkWin(player2)){
 						sayWin.setText(player2Name + " Win!");
@@ -265,7 +276,7 @@ public class OLClient{
 					}.start();
 					
 					//Waiting to read from client player
-					new Thread(){
+					Thread writeT = new Thread(){
 						@Override
 						public void run(){
 							Platform.runLater(new Runnable() {
@@ -284,6 +295,10 @@ public class OLClient{
 													circles.get(i).get(2 - j).setFill(Color.DEEPPINK);
 											}
 										}
+										
+										makeMoveButton2.setVisible(true);
+										p1Waiting.setText("");
+										
 										
 										//check win after read data
 										if (board.checkWin(player1)){
@@ -304,7 +319,18 @@ public class OLClient{
 									}
 								});
 						}
-					}.start();
+					};
+					
+					Timer timer = new Timer();
+					TimerTask delayedThreadStartTask = new TimerTask() {
+						 	@Override
+						 	public void run() {
+								// TODO Auto-generated method stub
+						 		writeT.start();
+							}
+					};
+					timer.schedule(delayedThreadStartTask, 1000);
+					
 					
 				}
 			}catch(NumberFormatException nfe){
@@ -328,8 +354,8 @@ public class OLClient{
 		player2Layout.getChildren().add(smallRB2);
 		player2Layout.getChildren().add(mediumRB2);
 		player2Layout.getChildren().add(largeRB2);
-
 		player2Layout.getChildren().add(makeMoveButton2);
+		player2Layout.getChildren().add(p1Waiting);
 		
 		
 		//Finalize game layout

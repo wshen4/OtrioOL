@@ -31,6 +31,9 @@ import java.net.Socket;
 import java.nio.file.Paths;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class OLServer{
 	
@@ -47,8 +50,7 @@ public class OLServer{
 		Chessboard board = new Chessboard();
 		Player player1 = new Player(1);
 		Player player2 = new Player(2);
-		
-		
+		Label p2Waiting = new Label();
 		
 		//gaming layout
 		BorderPane gameLayout =  new BorderPane();
@@ -161,17 +163,10 @@ public class OLServer{
 		smallRB.setSelected(true);
 		
 		//Chess Type Selection Radio Button Group
-				ToggleGroup player2Group = new ToggleGroup();
-				RadioButton smallRB2 = new RadioButton("Small " + Integer.toString(player2.getSchess()));
-				smallRB2.setToggleGroup(player2Group);
-				smallRB2.setUserData(0);
-				RadioButton mediumRB2 = new RadioButton("Medium " + Integer.toString(player2.getMchess()));
-				mediumRB2.setToggleGroup(player2Group);
-				mediumRB2.setUserData(1);
-				RadioButton largeRB2 = new RadioButton("Large " + Integer.toString(player2.getLchess()));
-				largeRB2.setToggleGroup(player2Group);
-				largeRB2.setUserData(2);
-				smallRB2.setSelected(true);
+				
+		Label smallRB2 = new Label("Small " + Integer.toString(player2.getSchess()));
+		Label mediumRB2 = new Label("Medium " + Integer.toString(player2.getMchess()));
+		Label largeRB2 = new Label("Large " + Integer.toString(player2.getLchess()));
 		
 		
 		
@@ -194,6 +189,8 @@ public class OLServer{
 								circles.get(i).get(2 - j).setFill(Color.DEEPPINK);
 						}
 					}
+					makeMoveButton.setVisible(false);
+					p2Waiting.setText("Waiting For " + player2Name);
 				
 					//check win
 					if (board.checkWin(player1)){
@@ -211,6 +208,7 @@ public class OLServer{
 				//Parse to String and prepare to send over
 				input = Integer.toString(chosenPos) + Integer.toString(chessType);
 				
+				
 				//Write
 				new Thread(){
 					@Override
@@ -225,7 +223,7 @@ public class OLServer{
 				}.start();
 				
 				//Waiting to read from client player
-				new Thread(){
+				Thread writeT = new Thread(){
 					@Override
 					public void run(){
 						Platform.runLater(new Runnable() {
@@ -245,6 +243,9 @@ public class OLServer{
 										}
 									}
 									
+									makeMoveButton.setVisible(true);
+									p2Waiting.setText("");
+									
 									if (board.checkWin(player2)){
 										sayWin.setText(player2Name + " Win!");
 										makeMoveButton.setVisible(false);
@@ -263,8 +264,17 @@ public class OLServer{
 								}
 							});
 					}
-				}.start();
+				};
 				
+				Timer timer = new Timer();
+				TimerTask delayedThreadStartTask = new TimerTask() {
+					 	@Override
+					 	public void run() {
+							// TODO Auto-generated method stub
+					 		writeT.start();
+						}
+				};
+				timer.schedule(delayedThreadStartTask, 1000);
 				
 				
 			}catch(NumberFormatException nfe){
@@ -289,6 +299,7 @@ public class OLServer{
 		player1Layout.getChildren().add(mediumRB);
 		player1Layout.getChildren().add(largeRB);
 		player1Layout.getChildren().add(makeMoveButton);
+		player1Layout.getChildren().add(p2Waiting);
 		
 		//For Player2
 		Label playerLabel2 = new Label("Player " + Integer.toString(player2.getId()));
@@ -310,9 +321,7 @@ public class OLServer{
 		player2Layout.getChildren().add(smallRB2);
 		player2Layout.getChildren().add(mediumRB2);
 		player2Layout.getChildren().add(largeRB2);
-
 		player2Layout.getChildren().add(makeMoveButton2);
-		
 		
 		//Finalize game layout
 		gameLayout.setPadding(new Insets(50, 50, 50, 100));
@@ -322,10 +331,7 @@ public class OLServer{
 		gameLayout.setCenter(boardBack);
 		gameLayout.setBottom(sayWin);
 		
-		
 		return new Scene(gameLayout, 900, 700);
-		
-			
 	}
 
 	public static String read(Socket socket) throws IOException {
