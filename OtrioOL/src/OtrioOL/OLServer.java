@@ -247,12 +247,22 @@ public class OLServer{
 					if (board.checkWin(player1)){
 						Main.result(player1Name + " Win!");
 						gameover = true;
+						try {
+							socket.close();
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
 						
 					}
 					if (!player1.checkInvt(0) && !player1.checkInvt(1) && !player1.checkInvt(2)
 							&& !board.checkWin(player1) && !board.checkWin(player2)){
 						Main.result(player1Name + " " + player2Name + " " + "have a tie!");
 						gameover = true;
+						try {
+							socket.close();
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
 					}
 				}
 				
@@ -300,12 +310,22 @@ public class OLServer{
 									if (board.checkWin(player2)){
 										Main.result(player2Name + " Win!");
 										gameover = true;
+										try {
+											socket.close();
+										} catch (Exception e1) {
+											e1.printStackTrace();
+										}
 									}
 									if (!player2.checkInvt(0) && !player2.checkInvt(1) && !player2.checkInvt(2)
 											&& !board.checkWin(player1) && !board.checkWin(player2)){
 										
 										Main.result(player1Name + " " + player2Name + " " + "have a tie!");
 										gameover = true;
+										try {
+											socket.close();
+										} catch (Exception e1) {
+											e1.printStackTrace();
+										}
 									}
 									
 									
