@@ -165,7 +165,7 @@ public class OLClient{
 								}
 							}
 							makeMoveButton2.setVisible(true);
-							
+							p1Waiting.setText("");
 							
 							} catch (Exception e1) {
 								e1.printStackTrace();

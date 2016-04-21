@@ -142,10 +142,58 @@ public class OLServer{
 		makeMoveButton.setVisible(false);
 		makeMoveButton2.setVisible(false);
 		
-		if (player1GoesFirst)
+		//Labels for p2
+		Label smallRB2 = new Label("Small " + Integer.toString(player2.getSchess()));
+		Label mediumRB2 = new Label("Medium " + Integer.toString(player2.getMchess()));
+		Label largeRB2 = new Label("Large " + Integer.toString(player2.getLchess()));
+		
+		if (!player1GoesFirst){
+			//Wait for reading server player's input
+			p2Waiting.setText("Waiting for " + player2Name);
+			Thread firstT = new Thread(){
+			@Override
+			public void run(){
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							socket = serverSocket.accept();  
+							String data = read(socket);
+							board.putChess(player2, Integer.parseInt(data.substring(0,1)), Integer.parseInt(data.substring(1, 2)));
+							smallRB2.setText("Small " + Integer.toString(player2.getSchess()));
+							mediumRB2.setText("Medium " + Integer.toString(player2.getMchess()));
+							largeRB2.setText("Large " + Integer.toString(player2.getLchess()));
+							for (int i = 0; i < 9; i++){
+								for (int j = 0; j < 3; j++){
+									if (board.getBoard(i).get(j) == player2.getId())
+										circles.get(i).get(2 - j).setFill(Color.TURQUOISE);
+								}
+							}
+							makeMoveButton.setVisible(true);
+							p2Waiting.setText("");
+							
+							} catch (Exception e1) {
+								e1.printStackTrace();
+							}
+						}
+					});
+			}
+		};
+			
+		Timer timer = new Timer();
+		TimerTask delayedThreadStartTask = new TimerTask() {
+			 	@Override
+			 	public void run() {
+					// TODO Auto-generated method stub
+			 		firstT.start();
+				}
+		};
+		timer.schedule(delayedThreadStartTask, 1000);
+		}
+		
+		else{
 			makeMoveButton.setVisible(true);
-		else
-			makeMoveButton2.setVisible(true);
+		}
 		
 		
 		//For Player 1
@@ -165,11 +213,7 @@ public class OLServer{
 		largeRB.setUserData(2);
 		smallRB.setSelected(true);
 		
-		//Chess Type Selection Radio Button Group
-				
-		Label smallRB2 = new Label("Small " + Integer.toString(player2.getSchess()));
-		Label mediumRB2 = new Label("Medium " + Integer.toString(player2.getMchess()));
-		Label largeRB2 = new Label("Large " + Integer.toString(player2.getLchess()));
+		
 		
 		
 		

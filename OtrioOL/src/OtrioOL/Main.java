@@ -1,6 +1,7 @@
 package OtrioOL;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -20,14 +21,18 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayerBuilder;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.image.Image; 
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.geometry.Insets;	
 
 import java.nio.file.Paths;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main extends Application{
 	private static Stage window;
@@ -744,13 +749,13 @@ public class Main extends Application{
 	
 	//Fuction for OLServer Game
 	private static void gameServer() throws IOException{
-		window.setScene(OLServer.startServerGame("Server", "Client", true));
+		window.setScene(OLServer.startServerGame("Server", "Client", false));
 		window.setTitle("Server");
 		window.show();
 	}
 	//Fuction for OLClient Game
 	private static void gameClient(String address){
-		window.setScene(OLClient.startClientGame("Server", "Client", true, address));
+		window.setScene(OLClient.startClientGame("Server", "Client", false, address));
 		window.setTitle("Client");
 		window.show();
 	}
@@ -758,10 +763,17 @@ public class Main extends Application{
 	//Functions for game result
 	static void result(String winner){
 		BorderPane layout = new BorderPane();
-		Label winLbl = new Label(winner);
+		Label winLbl = new Label(winner + "\n(click to go back)");
+		winLbl.setFont(new Font("Arial", 30));
+		
 		layout.setCenter(winLbl);
-		layout.setPadding(new Insets(200, 200, 200, 200));
-		window.setScene(new Scene(layout, 900, 700));
+		Scene scene = new Scene(layout, 900, 700);
+		
+		scene.setOnMouseClicked(e -> {
+			goToWelcome();
+		});
+		
+		window.setScene(scene);
 		window.show();
 	}
 	
