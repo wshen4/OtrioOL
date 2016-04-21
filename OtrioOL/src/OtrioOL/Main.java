@@ -40,6 +40,7 @@ public class Main extends Application{
 		EASY, MEDIUM, HARD;
 	}
 	private static int port = 5000;
+	static MediaPlayer mediaPlayer;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -744,14 +745,15 @@ public class Main extends Application{
 	static void goToWelcome(){
 		window.setTitle("Otrio");
 		//play audio
-		
+		//playMusic("011.mp3",true, 13);
 		
 		
 		//Button
 		Button startButton = new Button("Start New Game");
 		startButton.setOnAction(e -> {
 			//new Scene for game setting
-			setting();
+			playMusic("b01.mp3",false,1);
+			setting();			
 		});
 		startButton.setEffect(new DropShadow());
 		
@@ -819,6 +821,24 @@ public class Main extends Application{
 				
 	}
 	
+	static void playMusic(String fileName, boolean repeat, int songLength){
+		Timer timer = new Timer();
+		TimerTask tk = new TimerTask(){
+			@Override
+			public void run(){
+				File mediaFile = new File(fileName);
+				Media media = new Media((mediaFile).toURI().toString());
+				mediaPlayer = new MediaPlayer(media);	
+				mediaPlayer.play();					
+			}
+		};
+		if(repeat){
+			timer.schedule(tk, 0, songLength * 1000);
+		}
+		else{
+			timer.schedule(tk, 0);
+		}
+	}
 	//Testings
 	private static void checkCircle(){
 		
