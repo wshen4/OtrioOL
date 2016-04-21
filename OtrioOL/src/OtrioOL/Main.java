@@ -755,6 +755,16 @@ public class Main extends Application{
 		window.show();
 	}
 	
+	//Functions for game result
+	static void result(String winner){
+		BorderPane layout = new BorderPane();
+		Label winLbl = new Label(winner);
+		layout.setCenter(winLbl);
+		layout.setPadding(new Insets(200, 200, 200, 200));
+		window.setScene(new Scene(layout, 900, 700));
+		window.show();
+	}
+	
 	@Override
 	public void start(Stage arg0) throws Exception {
 		// TODO Auto-generated method stub

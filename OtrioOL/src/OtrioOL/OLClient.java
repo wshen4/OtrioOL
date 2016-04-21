@@ -247,16 +247,13 @@ public class OLClient{
 					p1Waiting.setText("Waiting for " + player1Name);
 					
 					if (board.checkWin(player2)){
-						sayWin.setText(player2Name + " Win!");
-						makeMoveButton.setVisible(false);
-						makeMoveButton2.setVisible(false);
+
+						Main.result(player2Name + " Win!");
 					}
 					
 					if (!player2.checkInvt(0) && !player2.checkInvt(1) && !player2.checkInvt(2)
 							&& !board.checkWin(player1) && !board.checkWin(player2)){
-						sayWin.setText(player1Name + " " + player2Name + " " + "have a tie!");
-						
-						makeMoveButton2.setVisible(false);
+						Main.result(player1Name + " " + player2Name + " " + "have a tie!");
 					}
 					
 					//Parse to String and prepare to send over
@@ -302,14 +299,12 @@ public class OLClient{
 										
 										//check win after read data
 										if (board.checkWin(player1)){
-											sayWin.setText(player1Name + " Win!");
-											makeMoveButton.setVisible(false);
-											makeMoveButton2.setVisible(false);
+											
+											Main.result(player1Name + " Win!");
 										}
 										if (!player1.checkInvt(0) && !player1.checkInvt(1) && !player1.checkInvt(2)
 												&& !board.checkWin(player1) && !board.checkWin(player2)){
-											sayWin.setText(player1Name + " " + player2Name + " " + "have a tie!");
-											makeMoveButton.setVisible(false);
+											Main.result(player1Name + " " + player2Name + " " + "have a tie!");
 										}
 										
 										
