@@ -757,8 +757,7 @@ public class Main extends Application{
 	static void goToWelcome(){
 		window.setTitle("Otrio");
 		//play audio
-		//playMusic("011.mp3",true, 13);
-		
+		playMusic("backGround01.mp3",true, 229);		
 		
 		//Button
 		Button startButton = new Button("Start New Game");
