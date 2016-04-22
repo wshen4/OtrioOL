@@ -65,6 +65,7 @@ public class Main extends Application{
 		Button backButton = new Button("Quit Game");
 		backButton.setOnAction(e -> {
 			goToWelcome();
+			playMusic("button01.mp3",false,1);
 		});
 		backButton.setEffect(new DropShadow());
 		
@@ -174,6 +175,7 @@ public class Main extends Application{
 			try{
 				int chosenPos = (int) selectPos.getSelectedToggle().getUserData();
 				int chessType = (int) player1Group.getSelectedToggle().getUserData();
+				playMusic("button01.mp3",false,1);
 				
 				if (board.putChess(player1, chosenPos, chessType)){
 					board.putChess(player1, chosenPos, chessType);
@@ -250,6 +252,7 @@ public class Main extends Application{
 			try{
 				int chosenPos2 = (int) selectPos.getSelectedToggle().getUserData();
 				int chessType2 = (int) player2Group.getSelectedToggle().getUserData();
+				playMusic("button01.mp3",false,1);
 				if (board.putChess(player2, chosenPos2, chessType2)){
 					board.putChess(player2, chosenPos2, chessType2);
 					smallRB2.setText("Small " + Integer.toString(player2.getSchess()));
@@ -355,6 +358,7 @@ public class Main extends Application{
 		Button backButton = new Button("Quit Game");
 		backButton.setOnAction(e -> {
 			goToWelcome();
+			playMusic("button01.mp3",false,1);
 		});
 		backButton.setEffect(new DropShadow());
 		
@@ -487,6 +491,7 @@ public class Main extends Application{
 			try{
 				int chosenPos = (int) selectPos.getSelectedToggle().getUserData();
 				int chessType = (int) player1Group.getSelectedToggle().getUserData();
+				playMusic("button01.mp3",false,1);
 				
 				if (board.putChess(player1, chosenPos, chessType)){
 					board.putChess(player1, chosenPos, chessType);
@@ -613,6 +618,7 @@ public class Main extends Application{
 		backButton.setEffect(new DropShadow());
 		backButton.setOnAction(e -> {
 			goToWelcome();
+			playMusic("button01.mp3",false,1);
 		});
 			
 		//local game
@@ -640,6 +646,7 @@ public class Main extends Application{
 		portTxt.setMaxWidth(200);
 		clientBtn.setOnAction(e -> {
 			gameClient(addressTxt.getText(), Integer.parseInt(portTxt.getText()));
+			playMusic("button01.mp3",false,1);
 		});
 		
 		//VBox Layout
@@ -666,11 +673,13 @@ public class Main extends Application{
 		startGameButton.setOnAction(e -> {
 			LocalPeopleGames(namePlayer1.getText(), namePlayer2.getText(), 
 					(boolean) checkWhoFirst.getSelectedToggle().getUserData());
+			playMusic("button01.mp3",false,1);
 		});
 		oneVsOne.setOnAction(e -> {
 			menuLayout.getChildren().clear();
 			p1FirstRB.setText("Player 1 goes first");
 			p2FirstRB.setText("Player 2 goes first");
+			playMusic("button01.mp3",false,1);
 			menuLayout.getChildren().addAll(aiGame, oneVsOne, namePlayer1, namePlayer2, toggleBox, startGameButton, olStartBtn, backButton);
 			
 		});
@@ -695,6 +704,7 @@ public class Main extends Application{
 		startAI.setOnAction(e -> {
 			LocalAIGames(namePlayer.getText(), (AI) diffToggle.getSelectedToggle().getUserData(), 
 					(boolean) checkWhoFirst.getSelectedToggle().getUserData());
+			playMusic("button01.mp3",false,1);
 		});
 		
 		p1FirstRB.setText("You go first");
@@ -710,11 +720,13 @@ public class Main extends Application{
 		olStartBtn.setOnAction(e -> {
 			menuLayout.getChildren().clear();
 			menuLayout.getChildren().addAll(aiGame, oneVsOne, olStartBtn, createBtn, joinBtn, backButton);
+			playMusic("button01.mp3",false,1);
 		});
 		
 		createBtn.setOnAction(e -> {
 			menuLayout.getChildren().clear();
 			menuLayout.getChildren().addAll(aiGame, oneVsOne, olStartBtn, createBtn, toggleBox, serverBtn, joinBtn,backButton);
+			playMusic("button01.mp3",false,1);
 			
 		});
 		
@@ -729,7 +741,7 @@ public class Main extends Application{
 		joinBtn.setOnAction(e -> {
 			menuLayout.getChildren().clear();
 			menuLayout.getChildren().addAll(aiGame, oneVsOne, olStartBtn, createBtn, joinBtn, addressTxt, portTxt, clientBtn, backButton);
-			
+			playMusic("button01.mp3",false,1);
 		});
 		
 		settingLayout.setCenter(menuLayout);
@@ -745,14 +757,14 @@ public class Main extends Application{
 	static void goToWelcome(){
 		window.setTitle("Otrio");
 		//play audio
-		playMusic("01.mp3",true, 13);
+		//playMusic("011.mp3",true, 13);
 		
 		
 		//Button
 		Button startButton = new Button("Start New Game");
 		startButton.setOnAction(e -> {
 			//new Scene for game setting
-			playMusic("b01.mp3",false,1);
+			playMusic("button01.mp3",false,1);
 			setting();			
 		});
 		startButton.setEffect(new DropShadow());
@@ -948,6 +960,7 @@ public class Main extends Application{
 				int chosenPos = Integer.parseInt(positionText.getText());
 				int chessType = Integer.parseInt(chessText.getText());
 				
+				
 				if (chosenPos < 9 && chosenPos >= 0 && chessType < 3 && chessType >= 0
 						&& board.putChess(player1, chosenPos, chessType)){
 					board.putChess(player1, chosenPos, chessType);
@@ -994,6 +1007,7 @@ public class Main extends Application{
 			try{
 				int chosenPos2 = Integer.parseInt(positionText2.getText());
 				int chessType2 = Integer.parseInt(chessText2.getText());
+				playMusic("button01.mp3",false,1);
 				if (chosenPos2 < 9 && chosenPos2 >= 0 && chessType2 < 3 && chessType2 >= 0
 						&& board.putChess(player2, chosenPos2, chessType2)){
 					board.putChess(player2, chosenPos2, chessType2);
