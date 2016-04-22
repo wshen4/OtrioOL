@@ -198,6 +198,7 @@ public class Main extends Application{
 						sayWin.setText(player1Name + " Win!");
 						makeMoveButton.setVisible(false);
 						makeMoveButton2.setVisible(false);
+						winGame();
 					}
 					
 					if (!player1.checkInvt(0) && !player1.checkInvt(1) && !player1.checkInvt(2)
@@ -849,6 +850,19 @@ public class Main extends Application{
 		else{
 			timer.schedule(tk, 0);
 		}
+	}
+	
+	static void winGame() {
+		mediaPlayer.pause();
+		playMusic("b01.mp3",false,1);
+		Timer timer = new Timer();
+		/*TimerTask tt = new TimerTask(){
+			@Override
+			public void run(){
+				mediaPlayer.play();
+			}
+		};
+		timer.schedule(tt, 10 * 1000);*/
 	}
 	//Testings
 	private static void checkCircle(){
