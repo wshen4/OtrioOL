@@ -41,6 +41,7 @@ public class Main extends Application{
 	}
 	private static int port = 5000;
 	static MediaPlayer mediaPlayer;
+	private static boolean musicFlag = true;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -715,6 +716,7 @@ public class Main extends Application{
 			menuLayout.getChildren().clear();
 			
 			menuLayout.getChildren().addAll(aiGame, namePlayer, difficultBox, toggleBox, startAI, oneVsOne, olStartBtn,backButton);
+			playMusic("button01.mp3",false,1);
 		});
 		
 		//Online Game
@@ -758,7 +760,10 @@ public class Main extends Application{
 	static void goToWelcome(){
 		window.setTitle("Otrio");
 		//play audio
-		playMusic("backGround01.mp3",true, 229);		
+		if (musicFlag){
+			playMusic("Gumballs.mp3",true, 229);	
+			musicFlag = false;
+		}
 		
 		//Button
 		Button startButton = new Button("Start New Game");
@@ -767,7 +772,7 @@ public class Main extends Application{
 			playMusic("button01.mp3",false,1);
 			setting();			
 		});
-		startButton.setEffect(new DropShadow());
+		startButton.setEffect(new DropShadow()); 
 		
 		//Imageview
 		Image welcomeImg = new Image("file:OtrioOL/src/OtrioOL/Media/Image/Otrio.jpg",true);
@@ -841,7 +846,8 @@ public class Main extends Application{
 				File mediaFile = new File(fileName);
 				Media media = new Media((mediaFile).toURI().toString());
 				mediaPlayer = new MediaPlayer(media);	
-				mediaPlayer.play();					
+				mediaPlayer.play();			
+				mediaPlayer.setVolume(0.4);
 			}
 		};
 		if(repeat){
