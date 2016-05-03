@@ -641,7 +641,7 @@ public class Main extends Application{
 		Button serverBtn = new Button("Create");
 		
 		//Client
-		Button clientBtn = new Button("Client");
+		Button clientBtn = new Button("Join");
 		TextField addressTxt = new TextField("192.168.0.11");
 		addressTxt.setMaxWidth(200);
 		TextField portTxt = new TextField("5000");
