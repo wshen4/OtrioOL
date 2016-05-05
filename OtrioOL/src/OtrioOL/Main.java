@@ -41,7 +41,10 @@ public class Main extends Application{
 	}
 	private static int port = 5000;
 	static MediaPlayer mediaPlayer;
+	static MediaPlayer mediaPlayerGameDone;
 	private static boolean musicFlag = true;
+	
+	private static boolean isServer;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -274,6 +277,7 @@ public class Main extends Application{
 						sayWin.setText(player2Name + " Win!");
 						makeMoveButton.setVisible(false);
 						makeMoveButton2.setVisible(false);
+						winGame();
 					}
 					
 					if (!player2.checkInvt(0) && !player2.checkInvt(1) && !player2.checkInvt(2)
@@ -462,6 +466,7 @@ public class Main extends Application{
 			if (board.checkWin(player2)){
 				sayWin.setText(player2Name + " Win!");
 				makeMoveButton.setVisible(false);
+				loseGame();
 			}
 					
 			if (!player2.checkInvt(0) && !player2.checkInvt(1) && !player2.checkInvt(2)
@@ -515,6 +520,7 @@ public class Main extends Application{
 					if (board.checkWin(player1)){
 						sayWin.setText(player1Name + " Win!");
 						makeMoveButton.setVisible(false);
+						winGame();
 						return;
 					}
 					
@@ -544,6 +550,8 @@ public class Main extends Application{
 					if (board.checkWin(player2)){
 						sayWin.setText(player2Name + " Win!");
 						makeMoveButton.setVisible(false);
+						loseGame();
+						
 					}
 							
 					if (!player2.checkInvt(0) && !player2.checkInvt(1) && !player2.checkInvt(2)
@@ -798,12 +806,14 @@ public class Main extends Application{
 	
 	//Fuction for OLServer Game
 	private static void gameServer(boolean player1First) throws IOException{
+		isServer = true;
 		window.setScene(OLServer.startServerGame("Server", "Client", player1First, port));
 		window.setTitle("Server");
 		window.show();
 	}
 	//Fuction for OLClient Game
 	private static void gameClient(String address, int port){
+		isServer = false;
 		window.setScene(OLClient.startClientGame("Server", "Client", address, port));
 		window.setTitle("Client");
 		window.show();
@@ -811,6 +821,12 @@ public class Main extends Application{
 	
 	//Functions for game result
 	static void result(String winner){
+		if (isServer && winner.equals("Server")) winGame();
+		if (isServer && winner.equals("Client")) loseGame();
+		if (!isServer && winner.equals("Server")) loseGame();
+		if (!isServer && winner.equals("Client")) winGame();
+		
+		
 		//for the next game, change port
 		port++;
 		
@@ -859,17 +875,22 @@ public class Main extends Application{
 	}
 	
 	static void winGame() {
-		mediaPlayer.pause();
-		playMusic("b01.mp3",false,1);
-		Timer timer = new Timer();
-		/*TimerTask tt = new TimerTask(){
-			@Override
-			public void run(){
-				mediaPlayer.play();
-			}
-		};
-		timer.schedule(tt, 10 * 1000);*/
+		File mediaFile = new File("youwin.mp3");
+		Media media = new Media((mediaFile).toURI().toString());
+		mediaPlayerGameDone = new MediaPlayer(media);	
+		mediaPlayerGameDone.play();			
+		mediaPlayerGameDone.setVolume(0.9);
+		
 	}
+	
+	static void loseGame() {
+		File mediaFile = new File("gameover.mp3");
+		Media media = new Media((mediaFile).toURI().toString());
+		mediaPlayerGameDone = new MediaPlayer(media);	
+		mediaPlayerGameDone.play();			
+		mediaPlayerGameDone.setVolume(0.7);
+	}
+	
 	//Testings
 	private static void checkCircle(){
 		
