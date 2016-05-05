@@ -821,10 +821,10 @@ public class Main extends Application{
 	
 	//Functions for game result
 	static void result(String winner){
-		if (isServer && winner.equals("Server")) winGame();
-		if (isServer && winner.equals("Client")) loseGame();
-		if (!isServer && winner.equals("Server")) loseGame();
-		if (!isServer && winner.equals("Client")) winGame();
+		if (isServer && winner.equals("Server Win!")) winGame();
+		if (isServer && winner.equals("Client Win!")) loseGame();
+		if (!isServer && winner.equals("Server Win!")) loseGame();
+		if (!isServer && winner.equals("Client Win!")) winGame();
 		
 		
 		//for the next game, change port
