@@ -769,7 +769,7 @@ public class Main extends Application{
 		window.setTitle("Otrio");
 		//play audio
 		if (musicFlag){
-			playMusic("Gumballs.mp3",true, 229);	
+			playMusic("Gumballs.mp3",true, 240);	
 			musicFlag = false;
 		}
 		
@@ -888,7 +888,7 @@ public class Main extends Application{
 		Media media = new Media((mediaFile).toURI().toString());
 		mediaPlayerGameDone = new MediaPlayer(media);	
 		mediaPlayerGameDone.play();			
-		mediaPlayerGameDone.setVolume(0.7);
+		mediaPlayerGameDone.setVolume(0.5);
 	}
 	
 	//Testings
